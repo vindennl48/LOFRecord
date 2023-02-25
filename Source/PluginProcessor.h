@@ -81,6 +81,7 @@ public:
     // create filepath string with a default location of the desktop and a default filename of "test.wav"
     juce::String m_directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
     juce::String m_trackName = "default";
+    juce::String m_songName = "default";
     juce::String m_debug = "none";
     float m_gain = 0;
     bool m_isRecording = false;

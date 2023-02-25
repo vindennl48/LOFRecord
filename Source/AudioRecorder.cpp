@@ -40,6 +40,7 @@ void AudioRecorder::startRecording(const juce::String& filepath)
 }
 
 // startRecording for mp3
+// Not working yet..
 void AudioRecorder::startRecordingMP3(const juce::String& filepath)
 {
     // Create an instance of the MP3 format object

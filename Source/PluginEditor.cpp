@@ -15,7 +15,7 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 500);
+    setSize (400, 500);  // change back to 500 to remove debug
     
     // variable to adjust vertical spacing
     int y = 10;
@@ -75,10 +75,8 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
     recordingButton.onClick = [&] {
         if (audioProcessor.isRecording()) {
             audioProcessor.stopRecording();
-            recordingButton.setButtonText("Start Recording");
         } else {
             audioProcessor.startRecording();
-            recordingButton.setButtonText("Stop Recording");
         }
     };
 
@@ -94,7 +92,13 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
     syncWithOtherInstancesButton.setToggleState(audioProcessor.getSyncWithOtherInstances(), juce::dontSendNotification);
     syncWithOtherInstancesButton.onClick = [&] {
         audioProcessor.setSyncWithOtherInstances(syncWithOtherInstancesButton.getToggleState());
+        songNameTextBox.setText(audioProcessor.getSongName(), false); // update songNameTextBox
     };
+
+    // y += 30 + 10;
+    // debugTextBox.setBounds(20, y, getWidth() - 40, 30);
+    // y += 30 + 10;
+    // debugTextBox2.setBounds(20, y, getWidth() - 40, 30);
 
     addAndMakeVisible(titleLabel);
     addAndMakeVisible(songNameLabel);
@@ -108,6 +112,9 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
     addAndMakeVisible(recordingButton);
     addAndMakeVisible(startRecordingOnLaunchButton);
     addAndMakeVisible(syncWithOtherInstancesButton);
+
+    // addAndMakeVisible(debugTextBox);
+    // addAndMakeVisible(debugTextBox2);
 }
 
 LOFRecordAudioProcessorEditor::~LOFRecordAudioProcessorEditor()
@@ -127,15 +134,19 @@ void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
     {
         recordingStatusLabel.setText("RECORDING!", juce::dontSendNotification);
         recordingStatusLabel.setColour(juce::Label::textColourId, juce::Colours::red);
+
+        recordingButton.setButtonText("Stop Recording");
     }
     else
     {
         recordingStatusLabel.setText("Not Recording..", juce::dontSendNotification);
         recordingStatusLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+
+        recordingButton.setButtonText("Start Recording");
     }
 
-    // Title
-    // g.drawFittedText ("Recording Plugin!", getLocalBounds(), juce::Justification::centredTop, 1);
+    // debugTextBox.setText(audioProcessor.m_params.state.getProperty("songName").toString(), false);
+    // debugTextBox2.setText(audioProcessor.m_params.state.getProperty("songNameGlobal").toString(), false);
 }
 
 /* void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)

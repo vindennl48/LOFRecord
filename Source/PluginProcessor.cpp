@@ -32,6 +32,7 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
     m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
     m_params.state.addChild(juce::ValueTree("trackName"), -1, nullptr);
     m_params.state.addChild(juce::ValueTree("songName"), -1, nullptr);
+    m_params.state.addChild(juce::ValueTree("songNameGlobal"), -1, nullptr);
     // ----------------- mitch stuff -----------------
 }
 
@@ -62,12 +63,12 @@ juce::String LOFRecordAudioProcessor::createFilename()
     juce::int64 time = juce::Time::getCurrentTime().toMilliseconds() % 86400000;
 
     // join date, time, song name, track name
-    juce::String filename = date + "-" + juce::String(time) + "-" + m_songNameGlobal + "-" + m_trackName + "-";
+    juce::String filename = date + "-" + juce::String(time) + "-" + getSongName() + "-" + getTrackName() + "-";
 
     // get the number of files in the directory starting with filename
-    juce::File directory = juce::File(m_directory);
+    juce::File directory = juce::File(getDirectory());
     // create filename search string that removes time from the middle
-    juce::String search = date + "-*" + "-" + m_songNameGlobal + "-" + m_trackName + "-*";
+    juce::String search = date + "-*" + "-" + getSongName() + "-" + getTrackName() + "-*";
     // count all files in directory that start with search string
     juce::Array<juce::File> files = directory.findChildFiles(juce::File::TypesOfFileToFind::findFiles, true, search);
     // set a variable 'count' to the number of files found
@@ -127,6 +128,14 @@ bool LOFRecordAudioProcessor::getStartRecordingOnLaunch() const
 // Set the syncwithotherinstances
 void LOFRecordAudioProcessor::setSyncWithOtherInstances(bool syncWithOtherInstances)
 {
+    if (syncWithOtherInstances == true && m_isRecordingGlobal == true)
+    {
+        startRecording();
+    }
+    else
+    {
+        stopRecording();
+    }
     m_syncWithOtherInstances = syncWithOtherInstances;
     m_params.state.setProperty("syncWithOtherInstances", m_syncWithOtherInstances, nullptr);
 }
@@ -154,16 +163,27 @@ const juce::String& LOFRecordAudioProcessor::getTrackName() const
 // set song name
 void LOFRecordAudioProcessor::setSongName(const juce::String& songName)
 {
-    // set songName to lowercase and replace all special characters with underscores
-    m_songNameGlobal = songName.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
-    // m_songNameGlobal = songName;
-    m_params.state.setProperty("songName", m_songNameGlobal, nullptr);
+    if (m_syncWithOtherInstances) {
+        // set songName to lowercase and replace all special characters with underscores
+        m_songNameGlobal = songName.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
+    
+        m_params.state.setProperty("songNameGlobal", m_songNameGlobal, nullptr);
+    } else {
+        // set songName to lowercase and replace all special characters with underscores
+        m_songName = songName.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
+        
+        m_params.state.setProperty("songName", m_songName, nullptr);
+    }
 }
 
 // get song name
 const juce::String& LOFRecordAudioProcessor::getSongName() const
 {
-    return m_songNameGlobal;
+    if (m_syncWithOtherInstances) {
+        return m_songNameGlobal;
+    } else {
+        return m_songName;
+    }
 }
 
 // isRecording()
@@ -364,12 +384,13 @@ void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInB
         m_startRecordingOnLaunch = m_params.state.getProperty("startRecordingOnLaunch");
         m_syncWithOtherInstances = m_params.state.getProperty("syncWithOtherInstances");
         m_trackName = m_params.state.getProperty("trackName").toString();
-        m_songNameGlobal = m_params.state.getProperty("songName").toString();
+        m_songNameGlobal = m_params.state.getProperty("songNameGlobal").toString();
+        m_songName = m_params.state.getProperty("songName").toString();
 
+        // start recording on launch if the user has selected that option
         if (m_startRecordingOnLaunch && m_firstLaunch) {
             startRecording();
         }
-
         m_firstLaunch = false;
     }
 }

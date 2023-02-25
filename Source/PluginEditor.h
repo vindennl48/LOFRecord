@@ -72,6 +72,10 @@ public:
     // create a toggle button for sync with other instances
     juce::ToggleButton syncWithOtherInstancesButton {"Sync with Other Instances"};
 
+
+    // create a textbox for debugging
+    // juce::TextEditor debugTextBox {"debug-1"};
+    // juce::TextEditor debugTextBox2 {"debug-2"};
     // ----------------- mitch stuff -----------------
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LOFRecordAudioProcessorEditor)

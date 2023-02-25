@@ -42,6 +42,11 @@ public:
     // create a title label
     juce::Label titleLabel {"titleLabel", "LOF Recorder!"};
 
+    // create a label for the song name
+    juce::Label songNameLabel {"songNameLabel", "Song Name"};
+    // create a text editor for the song name
+    juce::TextEditor songNameTextBox {"songName"};
+
     // create a label for the directory
     juce::Label directoryLabel {"directoryLabel", "Directory"};
     // create a text editor for the directory to save audio to

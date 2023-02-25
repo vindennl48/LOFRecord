@@ -10,33 +10,51 @@ AudioRecorder::AudioRecorder() :
                 isRecording(false)
 {
     // Set up the WAV file format
-    // formatManager.registerFormat(&wavFormat, true);
+    // wavFormat.registerBasicFormats();
 }
 
 AudioRecorder::~AudioRecorder()
 {
 }
 
-void AudioRecorder::startRecording(const juce::String& filePath)
+void AudioRecorder::setSampleRate(double sampleRate)
+{
+    this->sampleRate = sampleRate;
+}
+
+void AudioRecorder::setNumChannels(int numChannels)
+{
+    this->numChannels = numChannels;
+}
+
+void AudioRecorder::startRecording(const juce::String& filepath)
 {
     writer.reset(
         wavFormat.createWriterFor(
             new juce::FileOutputStream(
                 juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
-                .getChildFile(filePath)),
+                .getChildFile(filepath)),
             sampleRate, numChannels, 16, {}, 0)
     );
-
-    // Open the WAV file for writing
-/*     file = std::make_unique<juce::FileOutputStream>(
-        juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
-        .getChildFile(filePath));
-
-    if (writer != nullptr)
-        writer.release();
-
-    writer.reset(wavFormat.createWriterFor(file.get(), sampleRate, numChannels, 16, {}, 0)); */
     isRecording = true;
+}
+
+// startRecording for mp3
+void AudioRecorder::startRecordingMP3(const juce::String& filepath)
+{
+    // Create an instance of the MP3 format object
+    juce::AudioFormat* format = formatManager.findFormatForFileExtension("mp3");
+
+    if (format != nullptr)
+    {
+        writer.reset(format->createWriterFor(
+            new juce::FileOutputStream(
+                juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
+                .getChildFile(filepath)
+            ),
+            sampleRate, numChannels, 128000, {}, 0));
+        isRecording = true;
+    }
 }
 
 void AudioRecorder::stopRecording()

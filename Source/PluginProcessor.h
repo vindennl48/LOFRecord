@@ -58,7 +58,6 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     // ----------------- mitch stuff -----------------
-    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     const juce::String& getDirectory() const;
     void setDirectory(const juce::String& path);
     float getGain() const;
@@ -69,23 +68,30 @@ public:
     void setSyncWithOtherInstances(bool syncWithOtherInstances);
     const juce::String& getTrackName() const;
     void setTrackName(const juce::String& trackName);
-    bool isRecording() const;
+    void setSongName(const juce::String& songName);
+    const juce::String& getSongName() const;
+    bool isRecording();
     void isRecording(bool setRecording);
     void startRecording();
     void stopRecording();
+    juce::String createFilename();
 
     juce::AudioProcessorValueTreeState m_params;
 
     // create filepath string with a default location of the desktop and a default filename of "test.wav"
-    juce::String m_directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName() + "/default.wav";
+    juce::String m_directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
     juce::String m_trackName = "default";
     juce::String m_debug = "none";
     float m_gain = 0;
     bool m_isRecording = false;
     bool m_startRecordingOnLaunch = false;
     bool m_syncWithOtherInstances = false;
+    bool m_firstLaunch = true;
     AudioRecorder m_recorder;
 
+    // STATIC
+    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    static juce::String m_songNameGlobal;
     static bool m_isRecordingGlobal;
     // ----------------- mitch stuff -----------------
 

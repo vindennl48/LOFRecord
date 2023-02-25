@@ -25,6 +25,16 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
     titleLabel.setBounds(20, y, getWidth() - 40, 30);
 
     y += 30 + 10;
+    songNameLabel.setBounds(20, y, getWidth() - 40, 30);
+    y += 30 + 10;
+    songNameTextBox.setBounds(20, y, getWidth() - 40, 30);
+    songNameTextBox.setText(audioProcessor.getSongName(), false);
+    songNameTextBox.setTextToShowWhenEmpty("default", juce::Colours::grey);
+    songNameTextBox.onTextChange = [&] {
+        audioProcessor.setSongName(songNameTextBox.getText());
+    };
+
+    y += 30 + 10;
     directoryLabel.setBounds(20, y, getWidth() - 40, 30);
     y += 30 + 10;
     directoryTextBox.setBounds(20, y, getWidth() - 40, 30);
@@ -87,6 +97,8 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
     };
 
     addAndMakeVisible(titleLabel);
+    addAndMakeVisible(songNameLabel);
+    addAndMakeVisible(songNameTextBox);
     addAndMakeVisible(directoryLabel);
     addAndMakeVisible(directoryTextBox);
     addAndMakeVisible(directoryButton);

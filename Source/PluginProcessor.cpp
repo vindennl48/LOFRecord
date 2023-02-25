@@ -31,6 +31,7 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
     // Add the directory valuetree child node to the state tree
     m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
     m_params.state.addChild(juce::ValueTree("trackName"), -1, nullptr);
+    m_params.state.addChild(juce::ValueTree("songName"), -1, nullptr);
     // ----------------- mitch stuff -----------------
 }
 
@@ -43,37 +44,59 @@ LOFRecordAudioProcessor::~LOFRecordAudioProcessor()
 juce::AudioProcessorValueTreeState::ParameterLayout LOFRecordAudioProcessor::createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    // layout.add(std::make_unique<juce::AudioParameterFloat>("gain", "Gain", 0.0f, 1.0f, 0.5f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { "gain", 1 }, "Gain", 0.0f, 1.0f, 0.5f));
     layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "startRecordingOnLaunch", 1 }, "Start Recording On Launch", false));
     layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "syncWithOtherInstances", 1 }, "Sync With Other Instances", false));
     return layout;
 }
 
+// create the filename from the directory and track name
+juce::String LOFRecordAudioProcessor::createFilename()
+{
+    // format is going to be date-time-songname-trackname-count.wav
+
+    // get current date as yymmdd
+    juce::String date = juce::Time::getCurrentTime().formatted("%y%m%d");
+
+    // get current time of day in ms starting from midnight
+    juce::int64 time = juce::Time::getCurrentTime().toMilliseconds() % 86400000;
+
+    // join date, time, song name, track name
+    juce::String filename = date + "-" + juce::String(time) + "-" + m_songNameGlobal + "-" + m_trackName + "-";
+
+    // get the number of files in the directory starting with filename
+    juce::File directory = juce::File(m_directory);
+    // create filename search string that removes time from the middle
+    juce::String search = date + "-*" + "-" + m_songNameGlobal + "-" + m_trackName + "-*";
+    // count all files in directory that start with search string
+    juce::Array<juce::File> files = directory.findChildFiles(juce::File::TypesOfFileToFind::findFiles, true, search);
+    // set a variable 'count' to the number of files found
+    int count = files.size();
+
+    // join filename and count with 3 digits and .wav, pad with zeros if needed
+    filename = filename + juce::String(count).paddedLeft('0', 3) + ".wav";
+
+    return filename;
+}
+
 // Get the directory
 const juce::String& LOFRecordAudioProcessor::getDirectory() const
 {
-    // return m_params.state.getChildWithName("directory").getProperty("value").toString();
     return m_directory;
 }
 
 // Set the directory
 void LOFRecordAudioProcessor::setDirectory(const juce::String& path)
 {
-/*     // get current date as yymmdd
-    juce::String date = juce::Time::getCurrentTime().formatted("%y%m%d");
+    // check to make sure path is a valid directory
+    juce::File directory = juce::File(path);
+    if (!directory.isDirectory())
+    {
+        return;
+    }
 
-    // strip filename from path
-    juce::String filename = path.fromLastOccurrenceOf("/", false, false);
-    // add date to beginning of filename
-    filename = date + "_" + filename;
-    // add filename to directory
-    m_directory = path.upToLastOccurrenceOf("/", false, false) + "/" + filename; */
-
-    // m_directory = path;
-    // m_params.state.getChildWithName("directory").setProperty("value", m_directory, nullptr);
+    m_directory = path;
     m_params.state.setProperty("directory", path, nullptr);
-    // m_debug = m_params.state.getProperty("directory").toString();
 }
 
 // Get the gain
@@ -116,7 +139,9 @@ bool LOFRecordAudioProcessor::getSyncWithOtherInstances() const
 // Set m_trackName
 void LOFRecordAudioProcessor::setTrackName(const juce::String& trackName)
 {
-    m_trackName = trackName;
+    // set trackName to lowercase and replace all special characters with underscores
+    m_trackName = trackName.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
+    // m_trackName = trackName;
     m_params.state.setProperty("trackName", m_trackName, nullptr);
 }
 
@@ -126,11 +151,26 @@ const juce::String& LOFRecordAudioProcessor::getTrackName() const
     return m_trackName;
 }
 
+// set song name
+void LOFRecordAudioProcessor::setSongName(const juce::String& songName)
+{
+    // set songName to lowercase and replace all special characters with underscores
+    m_songNameGlobal = songName.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
+    // m_songNameGlobal = songName;
+    m_params.state.setProperty("songName", m_songNameGlobal, nullptr);
+}
+
+// get song name
+const juce::String& LOFRecordAudioProcessor::getSongName() const
+{
+    return m_songNameGlobal;
+}
+
 // isRecording()
-bool LOFRecordAudioProcessor::isRecording() const
+bool LOFRecordAudioProcessor::isRecording()
 {
     if (m_syncWithOtherInstances) {
-        return m_isRecordingGlobal;
+        m_isRecording = m_isRecordingGlobal;
     }
     return m_isRecording;
 }
@@ -138,21 +178,24 @@ void LOFRecordAudioProcessor::isRecording(bool setRecording)
 {
     if (m_syncWithOtherInstances) {
         m_isRecordingGlobal = setRecording;
-        m_isRecording = false;
-    } else {
-        m_isRecording = setRecording;
     }
+    m_isRecording = setRecording;
 }
 
 // startRecording()
 void LOFRecordAudioProcessor::startRecording()
 {
+    // create filepath
+    juce::String filename = createFilename();
+    juce::String filepath = m_directory + "/" + filename;
+    m_recorder.startRecording(filepath);
     isRecording(true);
 }
 
 // stopRecording()
 void LOFRecordAudioProcessor::stopRecording()
 {
+    m_recorder.stopRecording();
     isRecording(false);
 }
 // ----------------- mitch stuff -----------------
@@ -274,7 +317,7 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         buffer.clear (i, 0, buffer.getNumSamples());
 
     // ----------------- mitch stuff -----------------
-    //m_recorder.writeBufferToWav(buffer);
+    m_recorder.writeBufferToWav(buffer);
     // ----------------- mitch stuff -----------------
 
     // This is the place where you'd normally do the guts of your plugin's
@@ -321,6 +364,13 @@ void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInB
         m_startRecordingOnLaunch = m_params.state.getProperty("startRecordingOnLaunch");
         m_syncWithOtherInstances = m_params.state.getProperty("syncWithOtherInstances");
         m_trackName = m_params.state.getProperty("trackName").toString();
+        m_songNameGlobal = m_params.state.getProperty("songName").toString();
+
+        if (m_startRecordingOnLaunch && m_firstLaunch) {
+            startRecording();
+        }
+
+        m_firstLaunch = false;
     }
 }
 
@@ -331,4 +381,5 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     return new LOFRecordAudioProcessor();
 }
 
+juce::String LOFRecordAudioProcessor::m_songNameGlobal = "default";
 bool LOFRecordAudioProcessor::m_isRecordingGlobal = false;

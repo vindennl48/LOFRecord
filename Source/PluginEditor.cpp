@@ -9,10 +9,15 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+std::vector<LOFRecordAudioProcessorEditor*> LOFRecordAudioProcessorEditor::m_editors;
+
 //==============================================================================
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
+    // add this instance to list of m_editors
+    m_editors.push_back(this);
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 500);  // change back to 500 to remove debug
@@ -62,7 +67,7 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
     trackNameTextBox.setText(audioProcessor.getTrackName(), false);
     trackNameTextBox.setTextToShowWhenEmpty("default", juce::Colours::grey);
     trackNameTextBox.onTextChange = [&] {
-        audioProcessor.setTrackName(trackNameTextBox.getText().toLowerCase());
+        audioProcessor.setTrackName(trackNameTextBox.getText());
     };
 
     y += 30 + 10;
@@ -76,6 +81,10 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
         if (audioProcessor.isRecording()) {
             audioProcessor.stopRecording();
         } else {
+            if (audioProcessor.getSyncWithOtherInstances()) {
+                // set m_timeGlobal
+                audioProcessor.m_timeGlobal = juce::Time::getCurrentTime().toMilliseconds() % 86400000;
+            }
             audioProcessor.startRecording();
         }
     };
@@ -130,12 +139,27 @@ void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
 
     // trackNameTextBox.setText(audioProcessor.m_debug, false);
 
+    songNameTextBox.setText(audioProcessor.getSongName(), false);
+    trackNameTextBox.setText(audioProcessor.getTrackName(), false);
+
     if (audioProcessor.isRecording())
     {
         recordingStatusLabel.setText("RECORDING!", juce::dontSendNotification);
         recordingStatusLabel.setColour(juce::Label::textColourId, juce::Colours::red);
 
         recordingButton.setButtonText("Stop Recording");
+
+        // disable checkboxes
+        startRecordingOnLaunchButton.setEnabled(false);
+        syncWithOtherInstancesButton.setEnabled(false);
+
+        // disable textboxes
+        songNameTextBox.setEnabled(false);
+        directoryTextBox.setEnabled(false);
+        trackNameTextBox.setEnabled(false);
+
+        // disable directoryButton
+        directoryButton.setEnabled(false);
     }
     else
     {
@@ -143,6 +167,18 @@ void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
         recordingStatusLabel.setColour(juce::Label::textColourId, juce::Colours::black);
 
         recordingButton.setButtonText("Start Recording");
+
+        // enable checkboxes
+        startRecordingOnLaunchButton.setEnabled(true);
+        syncWithOtherInstancesButton.setEnabled(true);
+
+        // enable textboxes
+        songNameTextBox.setEnabled(true);
+        directoryTextBox.setEnabled(true);
+        trackNameTextBox.setEnabled(true);
+
+        // enable directoryButton
+        directoryButton.setEnabled(true);
     }
 
     // debugTextBox.setText(audioProcessor.m_params.state.getProperty("songName").toString(), false);

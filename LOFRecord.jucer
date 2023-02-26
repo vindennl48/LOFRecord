@@ -6,6 +6,10 @@
               pluginFormats="buildAU,buildStandalone" defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="XryX0P" name="LOFRecord">
     <GROUP id="{7F4C2784-B828-1BEF-0EEA-91810E11E7C3}" name="Source">
+      <FILE id="GwitsD" name="PluginProcessor_unused.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor_unused.cpp"/>
+      <FILE id="eEGcLa" name="PluginProcessor_getset.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor_getset.cpp"/>
       <FILE id="AHO2Io" name="AudioRecorder.cpp" compile="1" resource="0"
             file="Source/AudioRecorder.cpp"/>
       <FILE id="KBdsEu" name="AudioRecorder.h" compile="0" resource="0" file="Source/AudioRecorder.h"/>

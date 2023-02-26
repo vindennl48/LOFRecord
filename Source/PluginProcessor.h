@@ -12,8 +12,7 @@
 #include "AudioRecorder.h"
 
 //==============================================================================
-/**
-*/
+
 class LOFRecordAudioProcessor  : public juce::AudioProcessor
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
@@ -24,6 +23,71 @@ public:
     LOFRecordAudioProcessor();
     ~LOFRecordAudioProcessor() override;
 
+    // GET SET
+    //==============================================================================
+    const juce::String& getDirectory() const;
+    void setDirectory(const juce::String& path);
+
+    float getGain() const;
+    void setGain(float gain);
+
+    bool getStartRecordingOnLaunch() const;
+    void setStartRecordingOnLaunch(bool startRecordingOnLaunch);
+
+    bool getSyncWithOtherInstances() const;
+    void setSyncWithOtherInstances(bool syncWithOtherInstances);
+
+    const juce::String& getTrackName() const;
+    void setTrackName(const juce::String& trackName);
+
+    const juce::String& getSongName();
+    void setSongName(const juce::String& songName);
+
+    bool isRecording();
+    void isRecording(bool setRecording);
+    //==============================================================================
+
+    void startRecording();
+    void stopRecording();
+
+    // should be used with front-end record button
+    void Record(bool shouldRecord);
+
+    // to save the state of the plugin
+    juce::AudioProcessorValueTreeState m_params;
+
+    // STATIC
+    static bool m_isRecordingGlobal;
+    static juce::int64 m_timeGlobal;
+
+private:
+    juce::String createFilename();
+
+    AudioRecorder m_recorder;  // handles writing audio to disk
+    juce::String m_directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
+    juce::String m_trackName = "default";
+    juce::String m_songName = "default";
+
+    float m_gain = 0;  // not used
+    bool m_isRecording = false;
+    bool m_startRecordingOnLaunch = false;
+    bool m_syncWithOtherInstances = false;
+    bool m_firstLaunch = true;
+    
+    // STATIC
+    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    static juce::String m_songNameGlobal;
+
+    // vector of LOFRecordAudioProcessors as they are created
+    static std::vector<LOFRecordAudioProcessor*> m_processors;
+
+    // ----------------- mitch stuff -----------------
+
+
+
+
+public:
+    // UNUSED
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -34,11 +98,9 @@ public:
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
-    //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
 
-    //==============================================================================
     const juce::String getName() const override;
 
     bool acceptsMidi() const override;
@@ -46,57 +108,16 @@ public:
     bool isMidiEffect() const override;
     double getTailLengthSeconds() const override;
 
-    //==============================================================================
     int getNumPrograms() override;
     int getCurrentProgram() override;
     void setCurrentProgram (int index) override;
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
 
-    //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    //==============================================================================
 
-    // ----------------- mitch stuff -----------------
-    const juce::String& getDirectory() const;
-    void setDirectory(const juce::String& path);
-    float getGain() const;
-    void setGain(float gain);
-    bool getStartRecordingOnLaunch() const;
-    void setStartRecordingOnLaunch(bool startRecordingOnLaunch);
-    bool getSyncWithOtherInstances() const;
-    void setSyncWithOtherInstances(bool syncWithOtherInstances);
-    const juce::String& getTrackName() const;
-    void setTrackName(const juce::String& trackName);
-    void setSongName(const juce::String& songName);
-    const juce::String& getSongName() const;
-    bool isRecording();
-    void isRecording(bool setRecording);
-    void startRecording();
-    void stopRecording();
-    juce::String createFilename();
-
-    juce::AudioProcessorValueTreeState m_params;
-
-    // create filepath string with a default location of the desktop and a default filename of "test.wav"
-    juce::String m_directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
-    juce::String m_trackName = "default";
-    juce::String m_songName = "default";
-    juce::String m_debug = "none";
-    float m_gain = 0;
-    bool m_isRecording = false;
-    bool m_startRecordingOnLaunch = false;
-    bool m_syncWithOtherInstances = false;
-    bool m_firstLaunch = true;
-    AudioRecorder m_recorder;
-
-    // STATIC
-    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
-    static juce::String m_songNameGlobal;
-    static bool m_isRecordingGlobal;
-    // ----------------- mitch stuff -----------------
-
-private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LOFRecordAudioProcessor)
 };

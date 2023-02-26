@@ -78,5 +78,8 @@ public:
     // juce::TextEditor debugTextBox2 {"debug-2"};
     // ----------------- mitch stuff -----------------
 private:
+    // create vector of PluginEditor instances
+    static std::vector<LOFRecordAudioProcessorEditor*> m_editors;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LOFRecordAudioProcessorEditor)
 };

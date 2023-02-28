@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "TabInstance.h"
 
 //==============================================================================
 /**
@@ -28,6 +29,7 @@ public:
     // access the processor object that created it.
     LOFRecordAudioProcessor& audioProcessor;
     juce::TabbedComponent tabbedComponent;
+    TabInstance tabInstance;
 
 /*
     // ----------------- mitch stuff -----------------

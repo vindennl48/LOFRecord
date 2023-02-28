@@ -8,18 +8,23 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "TabInstance.h"
 
 
 //==============================================================================
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), tabbedComponent(juce::TabbedButtonBar::TabsAtTop)
+    :   AudioProcessorEditor (&p),
+        audioProcessor (p),
+        tabbedComponent(juce::TabbedButtonBar::TabsAtTop),
+        tabInstance()
 {
     setSize(800, 400);
-
+    
     auto bg_color = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
     tabbedComponent.setBounds(getLocalBounds());
-    tabbedComponent.addTab("Instances", bg_color, new Component(), true);
+    tabbedComponent.addTab("Instances", bg_color, &tabInstance, true);
     tabbedComponent.addTab("Recorded",  bg_color, new Component(), true);
+    tabbedComponent.addTab("Editor",    bg_color, new Component(), true);
     addAndMakeVisible(tabbedComponent);
 }
 

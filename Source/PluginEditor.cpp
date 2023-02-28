@@ -10,6 +10,7 @@
 #include "PluginEditor.h"
 #include "TabInstance.h"
 
+bool LOFRecordAudioProcessorEditor::is_recording_woo = false;
 
 //==============================================================================
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)

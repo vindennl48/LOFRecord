@@ -9,18 +9,27 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-std::vector<LOFRecordAudioProcessorEditor*> LOFRecordAudioProcessorEditor::m_editors;
 
 //==============================================================================
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
+    : AudioProcessorEditor (&p), audioProcessor (p), tabbedComponent(juce::TabbedButtonBar::TabsAtTop)
+{
+    setSize(800, 400);
+
+    auto bg_color = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
+    tabbedComponent.setBounds(getLocalBounds());
+    tabbedComponent.addTab("Instances", bg_color, new Component(), true);
+    tabbedComponent.addTab("Recorded",  bg_color, new Component(), true);
+    addAndMakeVisible(tabbedComponent);
+}
+
+/*
+LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    // add this instance to list of m_editors
-    m_editors.push_back(this);
-
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 500);  // change back to 500 to remove debug
+    setSize (400, 500);
     
     // variable to adjust vertical spacing
     int y = 10;
@@ -125,6 +134,7 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
     // addAndMakeVisible(debugTextBox);
     // addAndMakeVisible(debugTextBox2);
 }
+*/
 
 LOFRecordAudioProcessorEditor::~LOFRecordAudioProcessorEditor()
 {
@@ -133,10 +143,10 @@ LOFRecordAudioProcessorEditor::~LOFRecordAudioProcessorEditor()
 //==============================================================================
 void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     g.setColour (juce::Colours::white);
     g.setFont (24.0f);
-
+/*
     // trackNameTextBox.setText(audioProcessor.m_debug, false);
 
     songNameTextBox.setText(audioProcessor.getSongName(), false);
@@ -183,86 +193,9 @@ void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
 
     // debugTextBox.setText(audioProcessor.m_params.state.getProperty("songName").toString(), false);
     // debugTextBox2.setText(audioProcessor.m_params.state.getProperty("songNameGlobal").toString(), false);
+
+*/
 }
-
-/* void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
-{
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
-    g.setColour (juce::Colours::white);
-    g.setFont (24.0f);
-
-    // ----------------- mitch stuff -----------------
-    // drawFittedText for a title
-    g.drawFittedText ("Recording Plugin!", getLocalBounds(), juce::Justification::centredTop, 1);
-
-    // variable to adjust vertical spacing
-    int y = 50;
-
-    // add the textbox with 20px of padding that adjusts to the center on resize
-    filepathTextBox.setBounds(20, y, getWidth() - 40, 30);
-    filepathTextBox.setText(audioProcessor.getFilepath());
-    addAndMakeVisible(filepathTextBox);
-
-    y += 30 + 10;
-
-    // show the save button
-    saveButton.setBounds(20, y, getWidth() - 40, 30);
-    addAndMakeVisible(saveButton);
-
-    // when the save button is clicked, save the wav file
-    saveButton.onClick = [this] {
-        // open the file chooser
-        if (fileChooser.browseForFileToSave(true))
-        {
-            // get the file
-            juce::File file = fileChooser.getResult();
-            // save the wav file
-            audioProcessor.setFilepath(file.getFullPathName());
-            // update debug textbox with the filepath
-            debugTextBox.setText(audioProcessor.getFilepath());
-        }
-    };
-
-    y += 30 + 10;
-
-    // add the recording label and justify it to the center
-    recordingLabel.setBounds(20, y, getWidth() - 40, 50);
-    recordingLabel.setJustificationType(juce::Justification::centred);
-    recordingLabel.setFont(20.0f);
-    addAndMakeVisible(recordingLabel);
-    // if isRecording is true, set the text to "recording" and flash the text
-    if (audioProcessor.isRecording)
-    {
-        recordingLabel.setText("RECORDING!", juce::dontSendNotification);
-        recordingLabel.setColour(juce::Label::textColourId, juce::Colours::red);
-    }
-    else
-    {
-        recordingLabel.setText("Not Recording..", juce::dontSendNotification);
-        recordingLabel.setColour(juce::Label::textColourId, juce::Colours::black);
-    }
-
-    // add the recording button and justify it to the center
-    y += 50 + 10;
-    recordingButton.setBounds(20, y, getWidth() - 40, 30);
-    addAndMakeVisible(recordingButton);
-    // when clicked, toggle isRecording and update the button text
-    recordingButton.onClick = [this] {
-        audioProcessor.isRecording = !audioProcessor.isRecording;
-        if (audioProcessor.isRecording)
-        {
-            recordingButton.setButtonText("Stop Recording");
-            audioProcessor.m_recorder.startRecording(audioProcessor.m_filepath);
-        }
-        else
-        {
-            recordingButton.setButtonText("Start Recording");
-            audioProcessor.m_recorder.stopRecording();
-        }
-    };
-} */
 
 void LOFRecordAudioProcessorEditor::resized()
 {

@@ -27,17 +27,10 @@ public:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     LOFRecordAudioProcessor& audioProcessor;
+    juce::TabbedComponent tabbedComponent;
 
+/*
     // ----------------- mitch stuff -----------------
-/*     juce::FileChooser fileChooser {"Save the wav file", juce::File::getSpecialLocation(juce::File::userDesktopDirectory), "*.wav"};
-    juce::TextButton saveButton {"Save"};
-    juce::TextEditor filepathTextBox;
-    juce::Label debugLabel {"debugLabel", "debug"};
-    juce::TextEditor debugTextBox {"debug"};
-    juce::Label recordingLabel {"recordingLabel", "recording"};
-    // button to start and stop recording
-    juce::TextButton recordingButton {"Start Recording"}; */
-
     // ignore everything above this line
     // create a title label
     juce::Label titleLabel {"titleLabel", "LOF Recorder!"};
@@ -71,15 +64,7 @@ public:
     
     // create a toggle button for sync with other instances
     juce::ToggleButton syncWithOtherInstancesButton {"Sync with Other Instances"};
-
-
-    // create a textbox for debugging
-    // juce::TextEditor debugTextBox {"debug-1"};
-    // juce::TextEditor debugTextBox2 {"debug-2"};
-    // ----------------- mitch stuff -----------------
+*/
 private:
-    // create vector of PluginEditor instances
-    static std::vector<LOFRecordAudioProcessorEditor*> m_editors;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LOFRecordAudioProcessorEditor)
 };

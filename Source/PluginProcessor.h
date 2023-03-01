@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "AudioRecorder.h"
+#include "AudioRecorder2.h"
 
 //==============================================================================
 
@@ -63,7 +63,7 @@ public:
 private:
     juce::String createFilename();
 
-    AudioRecorder m_recorder;  // handles writing audio to disk
+    AudioRecorder2 m_recorder;  // handles writing audio to disk
     juce::String m_directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
     juce::String m_trackName = "default";
     juce::String m_songName = "default";
@@ -80,7 +80,8 @@ private:
 
     // vector of LOFRecordAudioProcessors as they are created
     static std::vector<LOFRecordAudioProcessor*> m_processors;
-
+    
+    AudioDeviceManager audioDeviceManager;
     // ----------------- mitch stuff -----------------
 
 

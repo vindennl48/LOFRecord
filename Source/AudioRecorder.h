@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <JuceHeader.h>
 #include <juce_audio_formats/juce_audio_formats.h>
 
 class AudioRecorder
@@ -23,4 +24,6 @@ private:
     double sampleRate;
     int numChannels;
     bool isRecording;
+
+    juce::TimeSliceThread backgroundThread { "Audio Recorder Thread" };
 };

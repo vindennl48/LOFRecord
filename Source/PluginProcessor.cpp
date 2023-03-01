@@ -36,6 +36,14 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
     m_recorder()
 #endif
 {
+        RuntimePermissions::request (RuntimePermissions::recordAudio,
+                                     [this] (bool granted)
+                                     {
+                                         int numInputChannels = granted ? 2 : 0;
+                                         audioDeviceManager.initialise (2, 2, nullptr, true, {}, nullptr);
+                                     });
+    audioDeviceManager.addAudioCallback (&m_recorder);
+
     // ----------------- mitch stuff -----------------
     // m_params.state = juce::ValueTree("MyAudioProcessor");
     // Add the directory valuetree child node to the state tree
@@ -50,6 +58,7 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor()
 {
+    audioDeviceManager.removeAudioCallback (&m_recorder);
 }
 
 // ----------------- mitch stuff -----------------
@@ -79,7 +88,7 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         buffer.clear (i, 0, buffer.getNumSamples());
 
     // ----------------- mitch stuff -----------------
-    if (m_isRecording) m_recorder.writeBufferToWav(buffer);
+    // if (m_isRecording) m_recorder.writeBufferToWav(buffer);
 
     // switch on recording if synced with other instances
     if (getSyncWithOtherInstances()) {
@@ -148,7 +157,9 @@ void LOFRecordAudioProcessor::startRecording()
     // create filepath
     juce::String filename = createFilename();
     juce::String filepath = m_directory + "/" + filename;
+
     m_recorder.startRecording(filepath);
+
     isRecording(true);
 }
 

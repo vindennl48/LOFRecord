@@ -14,7 +14,6 @@
 juce::String LOFRecordAudioProcessor::m_songNameGlobal = "default";
 bool LOFRecordAudioProcessor::m_isRecordingGlobal = false;
 juce::int64 LOFRecordAudioProcessor::m_timeGlobal = 0;
-std::vector<LOFRecordAudioProcessor*> LOFRecordAudioProcessor::m_processors;
 
 //==============================================================================
 LOFRecordAudioProcessor::LOFRecordAudioProcessor()
@@ -33,17 +32,9 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
         "Parameters",
         createParameterLayout()
     ),
-    m_recorder()
+    m_recorder(2 /*num channels*/)
 #endif
 {
-        RuntimePermissions::request (RuntimePermissions::recordAudio,
-                                     [this] (bool granted)
-                                     {
-                                         int numInputChannels = granted ? 2 : 0;
-                                         audioDeviceManager.initialise (2, 2, nullptr, true, {}, nullptr);
-                                     });
-    audioDeviceManager.addAudioCallback (&m_recorder);
-
     // ----------------- mitch stuff -----------------
     // m_params.state = juce::ValueTree("MyAudioProcessor");
     // Add the directory valuetree child node to the state tree
@@ -51,14 +42,10 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
     m_params.state.addChild(juce::ValueTree("trackName"), -1, nullptr);
     m_params.state.addChild(juce::ValueTree("songName"), -1, nullptr);
     // ----------------- mitch stuff -----------------
-
-    // add this new instance to m_processors
-    m_processors.push_back(this);
 }
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor()
 {
-    audioDeviceManager.removeAudioCallback (&m_recorder);
 }
 
 // ----------------- mitch stuff -----------------
@@ -88,7 +75,7 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         buffer.clear (i, 0, buffer.getNumSamples());
 
     // ----------------- mitch stuff -----------------
-    // if (m_isRecording) m_recorder.writeBufferToWav(buffer);
+    if (m_isRecording) m_recorder.add(buffer);
 
     // switch on recording if synced with other instances
     if (getSyncWithOtherInstances()) {
@@ -158,7 +145,7 @@ void LOFRecordAudioProcessor::startRecording()
     juce::String filename = createFilename();
     juce::String filepath = m_directory + "/" + filename;
 
-    m_recorder.startRecording(filepath);
+    m_recorder.startRecording(filepath, getSampleRate(), getBlockSize());
 
     isRecording(true);
 }

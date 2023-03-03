@@ -7,28 +7,33 @@
 class WavSave : public juce::Thread {
 public:
 
-  WavSave(int numChannels, int sampleRate, int bufferSize)
+  WavSave(int numChannels)
     : juce::Thread("WavSave"),
-      fifo(bufferSize * NUM_BLOCKS),
-      buffer(numChannels, bufferSize * NUM_BLOCKS),
+      fifo(512),
+      buffer(numChannels, 512),
       numChannels(numChannels),
-      sampleRate(sampleRate),
+      sampleRate(0),
       bitDepth(16),
-      bufferSize(bufferSize)
+      bufferSize(0)
   {}
 
-  void startRecording(const juce::String& filePath) {
+  // virtual ~WavSave() noexcept(true) {}
+
+  void startRecording(const juce::String& filePath, int sampleRate, int bufferSize) {
     // check if thread is running
     if (isThreadRunning()) return;
 
+    this->sampleRate = sampleRate;
+    this->bufferSize = bufferSize;
     this->filePath = filePath;
 
+    buffer.setSize(numChannels, bufferSize * NUM_BLOCKS);
     fifo.reset();
+    fifo.setTotalSize(bufferSize * NUM_BLOCKS);
     startThread();
   }
   void stopRecording() {
-    // exit thread
-    signalThreadShouldExit();
+    stopThread(1000);
   }
 
   void add(juce::AudioBuffer<float>& samples) {
@@ -45,6 +50,34 @@ public:
       }
     }
     fifo.finishedWrite(size1 + size2);
+  }
+
+
+  void run() override {
+    juce::WavAudioFormat wavFormat;
+    
+    auto writer = wavFormat.createWriterFor(
+      new juce::FileOutputStream(
+        juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
+        .getChildFile(filePath)
+      ),
+      sampleRate, numChannels, bitDepth, {}, 0
+    );
+
+    if (writer != nullptr) {
+      juce::AudioBuffer<float> samples(numChannels, bufferSize);
+
+      while (!threadShouldExit()) {
+        if (fifo.getNumReady() >= samples.getNumSamples()) {
+          get(samples);
+          writer->writeFromAudioSampleBuffer(samples, 0, samples.getNumSamples());
+        }
+        else {
+          juce::Thread::sleep(1);
+        }
+      }
+      writer->flush();
+    }
   }
 
 private:
@@ -64,33 +97,6 @@ private:
     fifo.finishedRead(size1 + size2);
   }
 
-  void run() override {
-    juce::WavAudioFormat wavFormat;
-    
-    auto writer = wavFormat.createWriterFor(
-      new juce::FileOutputStream(
-        juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
-        .getChildFile(filePath)
-      ),
-      sampleRate, numChannels, bitDepth, {}, 0
-    );
-
-    if (writer != nullptr) {
-      juce::AudioBuffer<float> samples(numChannels, bufferSize);
-
-      while (!threadShouldExit()) {
-        if (fifo.getNumReady() >= samples.getNumSamples()) {
-          get(samples);
-          writer->writeFromAudioSampleBuffer(samples, numChannels, samples.getNumSamples());
-        }
-        else {
-          juce::Thread::sleep(1);
-        }
-      }
-      writer->flush();
-    }
-  }
-
   juce::AbstractFifo       fifo;
   juce::AudioBuffer<float> buffer;
   juce::String             filePath;
@@ -98,4 +104,6 @@ private:
   int sampleRate;
   int bitDepth;
   int bufferSize;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WavSave)
 };

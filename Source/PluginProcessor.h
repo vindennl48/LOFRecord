@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "AudioRecorder.h"
+#include "DataStore.h"
 
 //==============================================================================
 
@@ -19,6 +19,8 @@ class LOFRecordAudioProcessor  : public juce::AudioProcessor
                             #endif
 {
 public:
+    int id = 0;
+
     //==============================================================================
     LOFRecordAudioProcessor();
     ~LOFRecordAudioProcessor() override;
@@ -54,33 +56,31 @@ public:
     void Record(bool shouldRecord);
 
     // to save the state of the plugin
-    juce::AudioProcessorValueTreeState m_params;
+    // juce::AudioProcessorValueTreeState m_params;
 
     // STATIC
     static bool m_isRecordingGlobal;
     static juce::int64 m_timeGlobal;
 
+    static DataStore ds;
+
 private:
     juce::String createFilename();
-
-    AudioRecorder m_recorder;  // handles writing audio to disk
-    juce::String m_directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
+    juce::String m_directory = juce::File::getSpecialLocation(
+      juce::File::userDesktopDirectory
+    ).getFullPathName();
     juce::String m_trackName = "default";
-    juce::String m_songName = "default";
+    juce::String m_songName  = "default";
 
-    float m_gain = 0;  // not used
-    bool m_isRecording = false;
-    bool m_startRecordingOnLaunch = false;
-    bool m_syncWithOtherInstances = false;
-    bool m_firstLaunch = true;
+    float m_gain                   = 0;     // not used
+    bool  m_isRecording            = false;
+    bool  m_startRecordingOnLaunch = false;
+    bool  m_syncWithOtherInstances = false;
+    bool  m_firstLaunch            = true;
     
     // STATIC
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     static juce::String m_songNameGlobal;
-
-    // vector of LOFRecordAudioProcessors as they are created
-    static std::vector<LOFRecordAudioProcessor*> m_processors;
-
     // ----------------- mitch stuff -----------------
 
 

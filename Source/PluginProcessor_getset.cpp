@@ -23,7 +23,7 @@ void LOFRecordAudioProcessor::setDirectory(const juce::String& path)
     }
 
     m_directory = path;
-    m_params.state.setProperty("directory", path, nullptr);
+    // m_params.state.setProperty("directory", path, nullptr);
 }
 
 // Get the gain
@@ -36,7 +36,7 @@ float LOFRecordAudioProcessor::getGain() const
 void LOFRecordAudioProcessor::setGain(float gain)
 {
     m_gain = gain;
-    m_params.state.getChildWithName("gain").setProperty("value", m_gain, nullptr);
+    // m_params.state.getChildWithName("gain").setProperty("value", m_gain, nullptr);
 }
 
 // Get the startrecordingonlaunch
@@ -49,7 +49,7 @@ bool LOFRecordAudioProcessor::getStartRecordingOnLaunch() const
 void LOFRecordAudioProcessor::setStartRecordingOnLaunch(bool startRecordingOnLaunch)
 {
     m_startRecordingOnLaunch = startRecordingOnLaunch;
-    m_params.state.setProperty("startRecordingOnLaunch", m_startRecordingOnLaunch, nullptr);
+    // m_params.state.setProperty("startRecordingOnLaunch", m_startRecordingOnLaunch, nullptr);
 }
 
 // Get the syncwithotherinstances
@@ -62,7 +62,7 @@ bool LOFRecordAudioProcessor::getSyncWithOtherInstances() const
 void LOFRecordAudioProcessor::setSyncWithOtherInstances(bool syncWithOtherInstances)
 {
     m_syncWithOtherInstances = syncWithOtherInstances;
-    m_params.state.setProperty("syncWithOtherInstances", m_syncWithOtherInstances, nullptr);
+    // m_params.state.setProperty("syncWithOtherInstances", m_syncWithOtherInstances, nullptr);
 }
 
 // Get m_trackName
@@ -77,7 +77,7 @@ void LOFRecordAudioProcessor::setTrackName(const juce::String& trackName)
     // set trackName to lowercase and replace all special characters with underscores
     m_trackName = trackName.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
     // m_trackName = trackName;
-    m_params.state.setProperty("trackName", m_trackName, nullptr);
+    // m_params.state.setProperty("trackName", m_trackName, nullptr);
 }
 
 // get song name
@@ -92,7 +92,7 @@ const juce::String& LOFRecordAudioProcessor::getSongName()
 // set song name
 void LOFRecordAudioProcessor::setSongName(const juce::String& songName) {
     m_songName = songName.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
-    m_params.state.setProperty("songName", m_songName, nullptr);
+    // m_params.state.setProperty("songName", m_songName, nullptr);
 
     if (getSyncWithOtherInstances()) {
         m_songNameGlobal = m_songName;

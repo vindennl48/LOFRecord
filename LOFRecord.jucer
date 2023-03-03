@@ -10,17 +10,15 @@
             file="Source/PluginProcessor_unused.cpp"/>
       <FILE id="eEGcLa" name="PluginProcessor_getset.cpp" compile="1" resource="0"
             file="Source/PluginProcessor_getset.cpp"/>
-      <FILE id="AHO2Io" name="AudioRecorder.cpp" compile="1" resource="0"
-            file="Source/AudioRecorder.cpp"/>
-      <FILE id="KBdsEu" name="AudioRecorder.h" compile="0" resource="0" file="Source/AudioRecorder.h"/>
       <FILE id="q8GBEO" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="mskri8" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="fVGMdX" name="TabInstance.cpp" compile="1" resource="0" file="Source/TabInstance.cpp"/>
       <FILE id="MwCY2s" name="TabInstance.h" compile="0" resource="0" file="Source/TabInstance.h"/>
       <FILE id="dKx10f" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
+      <FILE id="U2KZtQ" name="DataStore.h" compile="0" resource="0" file="Source/DataStore.h"/>
+      <FILE id="nDeXlZ" name="DataStore.cpp" compile="1" resource="0" file="Source/DataStore.cpp"/>
       <FILE id="aUo1Fx" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>

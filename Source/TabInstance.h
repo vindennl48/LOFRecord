@@ -4,20 +4,6 @@
 
 using namespace juce;
 
-// class TabInstanceTable : public juce::Component, public juce::TableListBoxModel {
-// public:
-//   TabInstanceTable();
-//   int getNumRows() override;
-//   void paintRowBackground(juce::Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
-//   void paintCell(juce::Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) override;
-//   void addNewRow(juce::StringArray newRowData);
-
-// private:
-//   juce::TableListBox table {{}, this};
-//   int numRows = 10;
-// };
-
-
 class TableComponent  : public Component,
                         private TableListBoxModel
 {
@@ -57,10 +43,11 @@ private:
     void paintRowBackground (Graphics&, int, int, int, bool) override {}
     void paintCell (Graphics&, int, int, int, int, bool)     override {}
 
-    Component* refreshComponentForCell (int rowNumber,
-                                        int columnId,
-                                        bool,
-                                        Component* existingComponentToUpdate) override
+    Component* refreshComponentForCell (
+      int rowNumber,
+      int columnId,
+      bool,
+      Component* existingComponentToUpdate) override
     {
         delete existingComponentToUpdate;
 
@@ -88,14 +75,23 @@ private:
 
 class TabInstance : public juce::Component {
 public:
-  TabInstance();
+  TabInstance() {
+    addAndMakeVisible(table);
+  }
 
-  void paint(juce::Graphics& g) override;
+  void paint(juce::Graphics& g) override {
+    g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    // g.fillAll(juce::Colours::black);
+    g.setColour (juce::Colours::white);
+    g.setFont (24.0f);
+  }
 
   /**
   * Set size, position, and font of comopnents
   */
-  void resized() override;
+  void resized() override {
+    table.setBounds(getLocalBounds());
+  }
 
 private:
   // juce::Label titleLabel {"instanceName", "Default"};

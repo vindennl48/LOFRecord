@@ -1,6 +1,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+// #include "PluginEditor.h"
+#include "PluginProcessor.h"
 
 using namespace juce;
 
@@ -8,92 +10,46 @@ class TableComponent  : public Component,
                         private TableListBoxModel
 {
 public:
-    TableComponent ()
-    {
-        addAndMakeVisible (table);
+  LOFRecordAudioProcessor& audioProcessor;
 
-        table.setModel (this);
-        table.setClickingTogglesRowSelection (false);
-        table.setHeader ([&]
-        {
-            auto header = std::make_unique<TableHeaderComponent>();
-            header->addColumn ("Track",           trackColumn,         120, 30, -1, TableHeaderComponent::notSortable);
-            header->addColumn ("Group",           groupColumn,         120, 30, -1, TableHeaderComponent::notSortable);
-            header->addColumn ("Recording",       recordingColumn,     120, 30, -1, TableHeaderComponent::notSortable);
-            header->addColumn ("Start on Launch", startOnLaunchColumn, 120, 30, -1, TableHeaderComponent::notSortable);
-            header->addColumn ("Start on Play",   startOnPlayColumn,   120, 30, -1, TableHeaderComponent::notSortable);
-            return header;
-        }());
-    }
-
-    void resized() override { table.setBounds (getLocalBounds()); }
+  TableComponent (LOFRecordAudioProcessor& p);
+  void resized() override;
 
 private:
-    enum
-    {
-        trackColumn = 1,
-        groupColumn,
-        recordingColumn,
-        startOnLaunchColumn,
-        startOnPlayColumn
-    };
+  TableListBox table;
 
-    int getNumRows() override          { return (int) 10; }
+  enum {
+      trackColumn = 1,
+      groupColumn,
+      recordingColumn,
+      startOnLaunchColumn,
+      startOnPlayColumn
+  };
 
-    void paintRowBackground (Graphics&, int, int, int, bool) override {}
-    void paintCell (Graphics&, int, int, int, int, bool)     override {}
+  int getNumRows() override;
 
-    Component* refreshComponentForCell (
-      int rowNumber,
-      int columnId,
-      bool,
-      Component* existingComponentToUpdate) override
-    {
-        delete existingComponentToUpdate;
+  void paintRowBackground (Graphics&, int, int, int, bool) override;
+  void paintCell (Graphics&, int, int, int, int, bool)     override;
 
-        return new Label ({}, [&]
-        {
-            switch (columnId)
-            {
-                case trackColumn:         return String("track");
-                case groupColumn:         return String("group");
-                case recordingColumn:     return String("is recording");
-                case startOnLaunchColumn: return String("yes");
-                case startOnPlayColumn:   return String("no");
-                default: break;
-            }
-
-            jassertfalse;
-            return String();
-        }());
-    }
-
-    TableListBox table;
+  Component* refreshComponentForCell (
+    int rowNumber,
+    int columnId,
+    bool,
+    Component* existingComponentToUpdate
+  ) override;
 };
 
 
 
 class TabInstance : public juce::Component {
 public:
-  TabInstance() {
-    addAndMakeVisible(table);
-  }
+  LOFRecordAudioProcessor& audioProcessor;
 
-  void paint(juce::Graphics& g) override {
-    g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    // g.fillAll(juce::Colours::black);
-    g.setColour (juce::Colours::white);
-    g.setFont (24.0f);
-  }
+  TabInstance(LOFRecordAudioProcessor& p) noexcept(false);
 
-  /**
-  * Set size, position, and font of comopnents
-  */
-  void resized() override {
-    table.setBounds(getLocalBounds());
-  }
+  void paint(juce::Graphics& g) override;
+  void resized() override;
 
 private:
-  // juce::Label titleLabel {"instanceName", "Default"};
   TableComponent table;
 };

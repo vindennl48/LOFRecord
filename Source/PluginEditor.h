@@ -1,38 +1,25 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
 
 #pragma once
 
 #include <JuceHeader.h>
-#include "PluginProcessor.h"
 #include "TabInstance.h"
+#include "PluginProcessor.h"
 
-//==============================================================================
-/**
-*/
 class LOFRecordAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
-    LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor&);
-    ~LOFRecordAudioProcessorEditor() override;
-
-    //==============================================================================
-    void paint (juce::Graphics&) override;
-    void resized() override;
-
-    // STATIC VARIABLES
-    static bool is_recording_woo;
-
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     LOFRecordAudioProcessor& audioProcessor;
-    juce::TabbedComponent tabbedComponent;
+    
     TabInstance tabInstance;
+    juce::TabbedComponent tabbedComponent;
+
+    LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor&);
+    ~LOFRecordAudioProcessorEditor() override;
+
+    void paint (juce::Graphics&) override;
+    void resized() override;
 
 /*
     // ----------------- mitch stuff -----------------

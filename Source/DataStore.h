@@ -13,6 +13,7 @@ public:
     state.addChild(juce::ValueTree("groupName"), -1, nullptr);
   }
 
+  // DataStore.cpp
   static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 };
 
@@ -25,6 +26,8 @@ struct Version {
   Version(juce::AudioProcessor& p);
 
   //--Custom Save Vars---------------------- 
+  //  These vars are persistent between plugin loads
+  //---------------------------------------- 
   const juce::String& directory() { return _getString("directory"); }
   void directory(const juce::String& s) { _setString(s, "directory"); }
 
@@ -40,9 +43,18 @@ struct Version {
   const bool recordOnPlay() { return _get<bool>("recordOnPlay"); }
   void recordOnPlay(bool s) { _set<bool>(s, "recordOnPlay"); }
 
+  // not used
   const bool gain() { return _get<float>("gain"); }
   void gain(bool s) { _set<float>(s, "gain"); }
   //--Custom Save Vars---------------------- 
+
+  //--Custom DOES NOT save Vars---------------------- 
+  //  These vars are not persistent between plugin loads
+  //  and reset after the DAW closes
+  //------------------------------------------------- 
+  const bool isRecording() { return is_recording; }
+  void isRecording(bool s) { is_recording = s; }
+  //--Custom DOES NOT save Vars---------------------- 
 
   // Put inside AudioProcessor::setStateInformation
   void load(const void* data, int sizeInBytes) {
@@ -57,6 +69,10 @@ struct Version {
   }
 
 private:
+  //--Custom DOES NOT save Vars---------------------- 
+  bool is_recording = false;
+  //--Custom DOES NOT save Vars---------------------- 
+
   const juce::String& _getString(const juce::Identifier& name) {
     return tree.state.getProperty(name).toString();
   }
@@ -75,12 +91,14 @@ private:
 
 class DataStore {
 public:
-  // std::vector<Version> versions;
   Version* versions[24] = { nullptr };
 
   ~DataStore() {
     for (auto& i : versions) {
-      delete i;
+      if (i != nullptr) {
+        delete i;
+        i = nullptr;
+      }
     }
   }
 
@@ -89,11 +107,13 @@ public:
     return Version::gid-1;
   }
 
-  Version& get(int id) {
-    return *versions[id];
+  Version& operator[](int id) {
+    // return *versions[id];
+    return get(id);
   }
 
-  Version& operator[](int id) {
+private:
+  Version& get(int id) {
     return *versions[id];
   }
 };

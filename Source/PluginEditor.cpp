@@ -1,31 +1,19 @@
-/*
-  ==============================================================================
 
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
-#include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "TabInstance.h"
 
-bool LOFRecordAudioProcessorEditor::is_recording_woo = false;
-
-//==============================================================================
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
-    :   AudioProcessorEditor (&p),
-        audioProcessor (p),
-        tabbedComponent(juce::TabbedButtonBar::TabsAtTop),
-        tabInstance()
+  : AudioProcessorEditor (&p),
+    audioProcessor (p),
+    tabbedComponent(juce::TabbedButtonBar::TabsAtTop),
+    tabInstance(p)
 {
     setSize(800, 400);
     
     auto bg_color = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
     tabbedComponent.setBounds(getLocalBounds());
-    tabbedComponent.addTab("Instances", bg_color, &tabInstance, true);
+    tabbedComponent.addTab("Instances", bg_color, &tabInstance,    true);
     tabbedComponent.addTab("Recorded",  bg_color, new Component(), true);
-    tabbedComponent.addTab("Editor",    bg_color, new Component(), true);
+    // tabbedComponent.addTab("Editor",    bg_color, new Component(), true);
     addAndMakeVisible(tabbedComponent);
 }
 

@@ -22,10 +22,79 @@ TableComponent::TableComponent (LOFRecordAudioProcessor& p)
 
 void TableComponent::resized() { table.setBounds (getLocalBounds()); }
 
-int TableComponent::getNumRows() { return (int) 10; }
+int TableComponent::getNumRows() {
+  return audioProcessor.ds.size();
+}
 
 void TableComponent::paintRowBackground (Graphics&, int, int, int, bool) {}
 void TableComponent::paintCell (Graphics&, int, int, int, int, bool)     {}
+
+// Component* TableComponent::refreshComponentForCell (
+//   int rowNumber,
+//   int columnId,
+//   bool,
+//   Component* existingComponentToUpdate)
+// {
+//   delete existingComponentToUpdate;
+// 
+//   return new Label ({}, [&]
+//   {
+//     switch (columnId)
+//     {
+//       case trackColumn:         return String("track");
+//       case groupColumn:         return String("group");
+//       case recordingColumn:     return String("is recording");
+//       case startOnLaunchColumn: return String("yes");
+//       case startOnPlayColumn:   return String("no");
+//       default: break;
+//     }
+// 
+//     jassertfalse;
+//     return String();
+//   }());
+// }
+
+class TrackListener : public juce::TextEditor::Listener {
+public:
+  TrackListener(LOFRecordAudioProcessor& p, int rowNumber, TableComponent& table)
+    : audioProcessor(p),
+      rowNumber(rowNumber),
+      table(table)
+  {}
+
+  void textEditorTextChanged(TextEditor& editor) override {
+    audioProcessor.ds[rowNumber].trackName(
+      editor.getText()
+    );
+    table.table.updateContent();
+  }
+
+  void textEditorReturnKeyPressed(TextEditor& editor) override {
+    audioProcessor.ds[rowNumber].trackName(
+      editor.getText()
+    );
+    table.table.updateContent();
+  }
+
+  void textEditorEscapeKeyPressed(TextEditor& editor) override {
+    audioProcessor.ds[rowNumber].trackName(
+      editor.getText()
+    );
+    table.table.updateContent();
+  }
+
+  void textEditorFocusLost(TextEditor& editor) override {
+    audioProcessor.ds[rowNumber].trackName(
+      editor.getText()
+    );
+    table.table.updateContent();
+  }
+
+private:
+  LOFRecordAudioProcessor& audioProcessor;
+  int rowNumber;
+  TableComponent& table;
+};
 
 Component* TableComponent::refreshComponentForCell (
   int rowNumber,
@@ -33,25 +102,60 @@ Component* TableComponent::refreshComponentForCell (
   bool,
   Component* existingComponentToUpdate)
 {
-  delete existingComponentToUpdate;
+  switch (columnId) {
+    case trackColumn: {
+      delete existingComponentToUpdate;
+      existingComponentToUpdate = nullptr;
 
-  return new Label ({}, [&]
-  {
-    switch (columnId)
-    {
-      case trackColumn:         return String("track");
-      case groupColumn:         return String("group");
-      case recordingColumn:     return String("is recording");
-      case startOnLaunchColumn: return String("yes");
-      case startOnPlayColumn:   return String("no");
-      default: break;
+      TextEditor *newComponent = nullptr;
+
+      if (existingComponentToUpdate == nullptr) {
+        newComponent = new TextEditor(
+          String(rowNumber) + "-" + String(columnId)
+        );
+        newComponent->addListener(
+          new TrackListener(audioProcessor, rowNumber, *this)
+        );
+      } else {
+        newComponent = (TextEditor*)existingComponentToUpdate;
+      }
+
+      newComponent->setText(
+        audioProcessor.ds[rowNumber].trackName(),
+        false
+      );
+      return newComponent;
     }
 
-    jassertfalse;
-    return String();
-  }());
-}
+    case groupColumn: {
+      TextEditor *newComponent = nullptr;
 
+      if (existingComponentToUpdate == nullptr) {
+        newComponent = new TextEditor(
+          String(rowNumber) + "-" + String(columnId)
+        );
+      } else {
+        newComponent = (TextEditor*)existingComponentToUpdate;
+      }
+
+      newComponent->setText(
+        audioProcessor.ds[rowNumber].trackName(),
+        false
+      );
+      return newComponent;
+    }
+
+    case recordingColumn:
+    case startOnLaunchColumn:
+    case startOnPlayColumn:
+
+    default:
+      if (existingComponentToUpdate != nullptr)
+        delete existingComponentToUpdate;
+      return new Label({}, "-");
+  };
+
+}
 
 TabInstance::TabInstance(LOFRecordAudioProcessor& p)
   : table(p),

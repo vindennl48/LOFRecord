@@ -1,7 +1,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-// #include "PluginEditor.h"
 #include "PluginProcessor.h"
 
 using namespace juce;
@@ -11,12 +10,12 @@ class TableComponent  : public Component,
 {
 public:
   LOFRecordAudioProcessor& audioProcessor;
+  TableListBox table;
 
   TableComponent (LOFRecordAudioProcessor& p);
   void resized() override;
 
 private:
-  TableListBox table;
 
   enum {
       trackColumn = 1,

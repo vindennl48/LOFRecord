@@ -132,6 +132,10 @@ public:
     }
   }
 
+  int size() {
+    return Version::gid;
+  }
+
   Version& operator[](int id) {
     return get(id);
   }

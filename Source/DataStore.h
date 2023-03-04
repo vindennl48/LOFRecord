@@ -1,6 +1,9 @@
+
 #pragma once
 
 #include <JuceHeader.h>
+
+#define NUM_VERSIONS 36
 
 class Tree : public juce::AudioProcessorValueTreeState {
 public:
@@ -24,6 +27,7 @@ struct Version {
   int  id = 0;
 
   Version(juce::AudioProcessor& p);
+  ~Version();
 
   //--Custom Save Vars---------------------- 
   //  These vars are persistent between plugin loads
@@ -91,7 +95,7 @@ private:
 
 class DataStore {
 public:
-  Version* versions[24] = { nullptr };
+  Version* versions[NUM_VERSIONS] = { nullptr };
 
   ~DataStore() {
     for (auto& i : versions) {
@@ -103,18 +107,46 @@ public:
   }
 
   int create(juce::AudioProcessor& p) {
-    versions[Version::gid] = new Version(p);
-    return Version::gid-1;
+    // max NUM_VERSIONS versions
+    if (Version::gid >= NUM_VERSIONS) return -1;
+
+    // find next available slot
+    for (auto& v : versions) {
+      if (v == nullptr) {
+        v = new Version(p);
+        return Version::gid-1;
+      }
+    }
+
+    // no slots available
+    return -1;
+  }
+
+  void remove(int id) {
+    for (auto& v : versions) {
+      if (v != nullptr && v->id == id) {
+        delete v;
+        v = nullptr;
+        return;
+      }
+    }
   }
 
   Version& operator[](int id) {
-    // return *versions[id];
     return get(id);
   }
 
 private:
   Version& get(int id) {
-    return *versions[id];
+    if (id < 0 || id >= Version::gid) {
+      throw std::out_of_range("Version id out of range");
+    }
+
+    for (auto& v : versions) {
+      if (v != nullptr && v->id == id) {
+        return *v;
+      }
+    }
   }
 };
 

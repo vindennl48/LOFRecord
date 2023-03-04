@@ -25,3 +25,7 @@ Tree::createParameterLayout() {
 Version::Version(juce::AudioProcessor& p) : tree(p) {
   id = gid++;
 }
+
+Version::~Version() {
+  gid--;
+}

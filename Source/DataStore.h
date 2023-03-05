@@ -9,16 +9,19 @@ struct Inst {
   juce::String trackName = "default";
   juce::String groupName = "default";
   juce::String directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
+  bool isRecording       = false;
   bool recordOnLaunch    = false;
   bool recordOnPlay      = false;
 
-  Inst(int id);
+  juce::AudioProcessorValueTreeState& t;
+
+  Inst(int id, juce::AudioProcessorValueTreeState& t);
 };
 
 class DataStore {
 public:
   // getters and setters
-  int addInst() noexcept;
+  int addInst(juce::AudioProcessorValueTreeState& t) noexcept;
   void removeInst(int id) noexcept;
   int size() const noexcept;
 
@@ -37,6 +40,9 @@ public:
   bool getRecordOnPlay(int id) const noexcept;
   void setRecordOnPlay(int id, bool b) noexcept;
 
+  bool getIsRecording(int id) const noexcept;
+  void setIsRecording(int id, bool b) noexcept;
+
   /**
    * Set all of the instance variables to the tree state.
    * Make sure to update this function when adding variables.
@@ -46,9 +52,9 @@ public:
 
   JUCE_DECLARE_SINGLETON(DataStore, true);
 private:
-  DataStore() = default;
-
   // data members
   int nextID = 0;
   juce::Array<Inst> insts;
+
+  DataStore() = default;
 };

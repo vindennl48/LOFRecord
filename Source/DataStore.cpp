@@ -2,13 +2,13 @@
 #include "DataStore.h"
 #include "Debug.h"
 
-Inst::Inst(int id) : id(id) {}
+Inst::Inst(int id, juce::AudioProcessorValueTreeState& t) : id(id), t(t) {}
 
 JUCE_IMPLEMENT_SINGLETON(DataStore);
 
-int DataStore::addInst() noexcept {
+int DataStore::addInst(juce::AudioProcessorValueTreeState& t) noexcept {
   printToConsole(S("----> ") + S("ADDING DATASTORE OBJ! ") + S(nextID));
-  insts.add(Inst(nextID));
+  insts.add(Inst(nextID, t));
   return nextID++;
 }
 
@@ -107,8 +107,9 @@ bool DataStore::getRecordOnLaunch(int id) const noexcept {
 void DataStore::setRecordOnLaunch(int id, bool b) noexcept {
   // set recordOnLaunch that matches id
   for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
+    if (insts.getReference(i).id == id && insts.getReference(i).recordOnLaunch != b) {
       insts.getReference(i).recordOnLaunch = b;
+      insts.getReference(i).t.getParameter("recordOnLaunch")->setValueNotifyingHost(b);
       break;
     }
   }
@@ -127,8 +128,30 @@ bool DataStore::getRecordOnPlay(int id) const noexcept {
 void DataStore::setRecordOnPlay(int id, bool b) noexcept {
   // set recordOnPlay that matches id
   for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
+    if (insts.getReference(i).id == id && insts.getReference(i).recordOnPlay != b) {
       insts.getReference(i).recordOnPlay = b;
+      insts.getReference(i).t.getParameter("recordOnPlay")->setValueNotifyingHost(b);
+      break;
+    }
+  }
+}
+
+bool DataStore::getIsRecording(int id) const noexcept {
+  // return isRecording that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      return insts.getReference(i).isRecording;
+    }
+  }
+  return false;
+}
+
+void DataStore::setIsRecording(int id, bool b) noexcept {
+  // set isRecording that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id && insts.getReference(i).isRecording != b) {
+      insts.getReference(i).isRecording = b;
+      insts.getReference(i).t.getParameter("isRecording")->setValueNotifyingHost(b);
       break;
     }
   }

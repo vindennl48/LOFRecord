@@ -145,3 +145,51 @@ public:
   //   // Make sure to change the button text to match recording state
   // }
 };
+
+class RecordOnLaunchButton : public juce::TextButton
+{
+public:
+  int id = 0;
+
+  RecordOnLaunchButton(int newID, const juce::String& name)
+    : id(newID),
+      juce::TextButton(name)
+  {
+    setButtonText(DataStore::getInstance()->getRecordOnLaunch(id) ? "ON" : "off");
+    setListener();
+  }
+
+  void setListener() {
+    onClick = [&] {
+      DataStore::getInstance()->setRecordOnLaunch(id, !DataStore::getInstance()->getRecordOnLaunch(id));
+    };
+  }
+
+  void paintButton (juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override {
+    auto& lf = getLookAndFeel();
+
+    if (DataStore::getInstance()->getRecordOnLaunch(id)) {
+      lf.drawButtonBackground (
+        g,
+        *this,
+        // findColour (getToggleState() ? buttonOnColourId : buttonColourId),
+        juce::Colours::green,
+        shouldDrawButtonAsHighlighted,
+        shouldDrawButtonAsDown
+      );
+      lf.drawButtonText (g, *this, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
+      setButtonText("ON");
+    } else {
+      lf.drawButtonBackground (
+        g,
+        *this,
+        findColour (getToggleState() ? buttonOnColourId : buttonColourId),
+        // juce::Colours::grey,
+        shouldDrawButtonAsHighlighted,
+        shouldDrawButtonAsDown
+      );
+      lf.drawButtonText (g, *this, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
+      setButtonText("off");
+    }
+  }
+};

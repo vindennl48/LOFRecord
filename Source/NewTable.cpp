@@ -90,6 +90,12 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
       }
       break;
 
+    case recordOnLaunchColumn:
+      if (existingComponentToUpdate == nullptr) {
+        return new RecordOnLaunchButton(rowNumber, "recordOnLaunch-" + juce::String(rowNumber));
+      }
+      break;
+
     default:
       delete existingComponentToUpdate;
       existingComponentToUpdate = nullptr;

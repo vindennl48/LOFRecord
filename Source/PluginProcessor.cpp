@@ -32,7 +32,6 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
     m_recorder() */
 #endif
 {
-  id = DataStore::getInstance()->addInst();
   m_params.state = juce::ValueTree("MyAudioProcessor");
   // Add the directory valuetree child node to the state tree
   m_params.state.addChild(juce::ValueTree("trackName"), -1, nullptr);
@@ -40,6 +39,7 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
   m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
 
   listeners = new Listeners(id, m_params);
+  id = DataStore::getInstance()->addInst(m_params);
 }
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
@@ -51,8 +51,9 @@ LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
 juce::AudioProcessorValueTreeState::ParameterLayout LOFRecordAudioProcessor::createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "recordOnLaunch", 1 }, "Start Recording On Launch", false));
-    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "recordOnPlay",   1 }, "Start Recording On Play",   false));
+    layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "isRecording",    1 }, "Record",                    false ) );
+    layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "recordOnLaunch", 1 }, "Start Recording On Launch", false ) );
+    layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "recordOnPlay",   1 }, "Start Recording On Play",   false ) );
     return layout;
 }
 

@@ -67,23 +67,10 @@ public:
   }
 };
 
-/**
- * Textbox that modifies the directory variable. Can not be modified directly
- * but when clicked on, it will open up the dialog box to be able to choose the
- * directory path.
- * */
 class DirectoryButton : public juce::TextButton
 {
 public:
   int id = 0;
-
-  DirectoryButton(int newID, const juce::String& name, const juce::String& text)
-    : id(newID),
-      juce::TextButton(name)
-  {
-    setButtonText("Directory");
-    setListener();
-  }
 
   DirectoryButton(int newID, const juce::String& name)
     : id(newID),
@@ -106,4 +93,55 @@ public:
       }
     };
   }
+};
+
+class RecordButton : public juce::TextButton
+{
+public:
+  int id = 0;
+
+  RecordButton(int newID, const juce::String& name)
+    : id(newID),
+      juce::TextButton(name)
+  {
+    setButtonText("Record");
+    setListener();
+  }
+
+  void setListener() {
+    // Need to add in some things to sync instances and shizz
+    // onClick = [&] {
+    // };
+  }
+
+  // void paintButton (Graphics& g, bool isMouseOverButton, bool isButtonDown) override {
+  //   float alpha = 1.0f;
+
+  //   if (! isEnabled()) {
+  //     isMouseOverButton = false;
+  //     isButtonDown = false;
+
+  //     alpha = 0.2f;
+  //   }
+
+  //   auto fill = isButtonDown ? backgroundColour.darker (0.5f)
+  //                             : isMouseOverButton ? backgroundColour.darker (0.2f)
+  //                                                 : backgroundColour;
+
+  //   auto bounds = getLocalBounds();
+
+  //   if (isButtonDown) bounds.reduce (2, 2);
+
+  //   Path ellipse;
+  //   ellipse.addEllipse (bounds.toFloat());
+  //   g.reduceClipRegion (ellipse);
+
+  //   g.setColour (fill.withAlpha (alpha));
+  //   g.fillAll();
+
+  //   g.setOpacity (alpha);
+  //   g.drawImage (iconImage, bounds.reduced (iconInset).toFloat(), RectanglePlacement::fillDestination, false);
+  //
+  //   // Make sure to change the button text to match recording state
+  // }
 };

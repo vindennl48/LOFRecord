@@ -7,9 +7,10 @@ class NewTable : public juce::Component,
                  public juce::TableListBoxModel
 {
 public:
+  int id = 0;
   juce::TableListBox table;
 
-  NewTable();
+  NewTable(int newID);
 
   void resized() override;
 
@@ -19,6 +20,7 @@ private:
     trackColumn = 1,
     groupColumn,
     directoryColumn,
+    recordColumn,
     recordOnLaunchColumn,
     recordOnPlayColumn
   };

@@ -6,11 +6,11 @@
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
   : AudioProcessorEditor (&p),
     audioProcessor (p),
-    table()
+    table(p.id)
     // table()
 {
   // this will run every time the plugin window opens
-  setSize(800, 400);
+  setSize(798, 400);
 
   addAndMakeVisible(table);
 

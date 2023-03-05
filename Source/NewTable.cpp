@@ -4,7 +4,7 @@
 #include "CustomComponents.h"
 #include "Debug.h"
 
-NewTable::NewTable()
+NewTable::NewTable(int newID) : id(newID)
 {
   addAndMakeVisible(table);
 
@@ -13,11 +13,12 @@ NewTable::NewTable()
   table.setHeader([&]
   {
     auto header = std::make_unique<juce::TableHeaderComponent>();
-    header->addColumn( "Track",     trackColumn,          120, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "Group",     groupColumn,          120, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "Directory", directoryColumn,      120, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "On Launch", recordOnLaunchColumn, 120, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "On Play",   recordOnPlayColumn,   120, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "Track",     trackColumn,          133, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "Group",     groupColumn,          133, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "Directory", directoryColumn,      133, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "Record",    recordColumn,         133, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "On Launch", recordOnLaunchColumn, 133, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "On Play",   recordOnPlayColumn,   133, 30, -1, juce::TableHeaderComponent::notSortable );
     return header;
   }());
 }
@@ -31,7 +32,7 @@ int NewTable::getNumRows() {
 }
 
 void NewTable::paintRowBackground(juce::Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
-  if (rowIsSelected) {
+  if (rowNumber == id) {
     g.fillAll(juce::Colours::lightblue);
   }
 }
@@ -80,6 +81,12 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
     case directoryColumn:
       if (existingComponentToUpdate == nullptr) {
         return new DirectoryButton(rowNumber, "directory-" + juce::String(rowNumber));
+      }
+      break;
+
+    case recordColumn:
+      if (existingComponentToUpdate == nullptr) {
+        return new RecordButton(rowNumber, "record-" + juce::String(rowNumber));
       }
       break;
 

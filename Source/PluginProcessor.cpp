@@ -38,9 +38,12 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
   m_params.state.addChild(juce::ValueTree("trackName"), -1, nullptr);
   m_params.state.addChild(juce::ValueTree("groupName"), -1, nullptr);
   m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
+
+  listeners = new Listeners(id, m_params);
 }
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
+  delete listeners;
 }
 
 // ----------------- mitch stuff -----------------

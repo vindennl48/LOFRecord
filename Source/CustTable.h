@@ -9,8 +9,11 @@ class CustRow {
 public:
   int id = 0;
 
-  juce::TextEditor trackName;
-  juce::TextEditor groupName;
+  juce::TextEditor   trackName;
+  juce::TextEditor   groupName;
+  juce::TextEditor   directory;
+  juce::ToggleButton recordOnLaunch;
+  juce::ToggleButton recordOnPlay;
 
   CustRow(int newID)
     : id(newID),
@@ -32,19 +35,46 @@ public:
       DataStore::getInstance()->setGroupName(id, groupName.getText()); 
     };
     x += groupName.getWidth();
+
+    directory.setBounds(x, y, 150, 30);
+    directory.setText(DataStore::getInstance()->getDirectory(id), false);
+    directory.onTextChange = [&] {
+      DataStore::getInstance()->setDirectory(id, directory.getText()); 
+    };
+    x += directory.getWidth();
+
+    recordOnLaunch.setBounds(x, y, 150, 30);
+    recordOnLaunch.setToggleState(DataStore::getInstance()->getRecordOnLaunch(id), false);
+    recordOnLaunch.onClick = [&] {
+      DataStore::getInstance()->setRecordOnLaunch(id, recordOnLaunch.getToggleState()); 
+    };
+    x += recordOnLaunch.getWidth();
+
+    recordOnPlay.setBounds(x, y, 150, 30);
+    recordOnPlay.setToggleState(DataStore::getInstance()->getRecordOnPlay(id), false);
+    recordOnPlay.onClick = [&] {
+      DataStore::getInstance()->setRecordOnPlay(id, recordOnPlay.getToggleState()); 
+    };
+    x += recordOnPlay.getWidth();
   }
 
   void update() {
-    trackName.setText(DataStore::getInstance()->getTrackName(id), false);
-    groupName.setText(DataStore::getInstance()->getGroupName(id), false);
+    trackName.setText(             DataStore::getInstance()->getTrackName(id),      false );
+    groupName.setText(             DataStore::getInstance()->getGroupName(id),      false );
+    directory.setText(             DataStore::getInstance()->getDirectory(id),      false );
+    recordOnLaunch.setToggleState( DataStore::getInstance()->getRecordOnLaunch(id), false );
+    recordOnPlay.setToggleState(   DataStore::getInstance()->getRecordOnPlay(id),   false );
   }
 
-  int size() { return 2; } // Number of variables
+  int size() { return 5; } // Number of variables
 
   juce::Component* getComponent(int index) {
     switch (index) {
       case 0:  return &trackName;
       case 1:  return &groupName;
+      case 2:  return &directory;
+      case 3:  return &recordOnLaunch;
+      case 4:  return &recordOnPlay;
       default: return nullptr;
     };
   }

@@ -6,10 +6,6 @@
               pluginFormats="buildAU,buildStandalone" defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="XryX0P" name="LOFRecord">
     <GROUP id="{7F4C2784-B828-1BEF-0EEA-91810E11E7C3}" name="Source">
-      <GROUP id="{71D3989B-3446-F352-B9BA-39BBC1631AB5}" name="DataStore">
-        <FILE id="fDOa01" name="DataStore.h" compile="0" resource="0" file="Source/DataStore/DataStore.h"/>
-        <FILE id="cGqIPp" name="DataStore.cpp" compile="1" resource="0" file="Source/DataStore/DataStore.cpp"/>
-      </GROUP>
       <FILE id="mskri8" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
       <FILE id="q8GBEO" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -21,6 +17,10 @@
       <FILE id="aUo1Fx" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="dKx10f" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
+      <FILE id="p92oe0" name="DataStore.cpp" compile="1" resource="0" file="Source/DataStore.cpp"/>
+      <FILE id="s67vkR" name="Listeners.h" compile="0" resource="0" file="Source/Listeners.h"/>
+      <FILE id="mPzpBt" name="Listeners.cpp" compile="1" resource="0" file="Source/Listeners.cpp"/>
+      <FILE id="R5qVwb" name="DataStore.h" compile="0" resource="0" file="Source/DataStore.h"/>
       <FILE id="mkXOCp" name="Debug.h" compile="0" resource="0" file="Source/Debug.h"/>
       <FILE id="PDVSFm" name="Debug.cpp" compile="1" resource="0" file="Source/Debug.cpp"/>
     </GROUP>

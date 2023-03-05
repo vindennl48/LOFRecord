@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "DataStore.h"
+#include "Listeners.h"
 
 //==============================================================================
 
@@ -57,6 +58,7 @@ public:
 
     // to save the state of the plugin
     juce::AudioProcessorValueTreeState m_params;
+    Listeners* listeners;
 
     // STATIC
     static bool m_isRecordingGlobal;

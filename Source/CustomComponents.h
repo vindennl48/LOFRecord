@@ -110,40 +110,37 @@ public:
 
   void setListener() {
     // Need to add in some things to sync instances and shizz
-    // onClick = [&] {
-    // };
+    onClick = [&] {
+      DataStore::getInstance()->setIsRecording(id, !DataStore::getInstance()->getIsRecording(id));
+    };
   }
 
-  // void paintButton (Graphics& g, bool isMouseOverButton, bool isButtonDown) override {
-  //   float alpha = 1.0f;
+  void paintButton (juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override {
+    auto& lf = getLookAndFeel();
 
-  //   if (! isEnabled()) {
-  //     isMouseOverButton = false;
-  //     isButtonDown = false;
-
-  //     alpha = 0.2f;
-  //   }
-
-  //   auto fill = isButtonDown ? backgroundColour.darker (0.5f)
-  //                             : isMouseOverButton ? backgroundColour.darker (0.2f)
-  //                                                 : backgroundColour;
-
-  //   auto bounds = getLocalBounds();
-
-  //   if (isButtonDown) bounds.reduce (2, 2);
-
-  //   Path ellipse;
-  //   ellipse.addEllipse (bounds.toFloat());
-  //   g.reduceClipRegion (ellipse);
-
-  //   g.setColour (fill.withAlpha (alpha));
-  //   g.fillAll();
-
-  //   g.setOpacity (alpha);
-  //   g.drawImage (iconImage, bounds.reduced (iconInset).toFloat(), RectanglePlacement::fillDestination, false);
-  //
-  //   // Make sure to change the button text to match recording state
-  // }
+    if (DataStore::getInstance()->getIsRecording(id)) {
+      lf.drawButtonBackground (
+        g,
+        *this,
+        // findColour (getToggleState() ? buttonOnColourId : buttonColourId),
+        juce::Colours::red,
+        shouldDrawButtonAsHighlighted,
+        shouldDrawButtonAsDown
+      );
+      lf.drawButtonText (g, *this, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
+      setButtonText("IS RECORDING");
+    } else {
+      lf.drawButtonBackground (
+        g,
+        *this,
+        findColour (getToggleState() ? buttonOnColourId : buttonColourId),
+        shouldDrawButtonAsHighlighted,
+        shouldDrawButtonAsDown
+      );
+      lf.drawButtonText (g, *this, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
+      setButtonText("Record");
+    }
+  }
 };
 
 class RecordOnLaunchButton : public juce::TextButton

@@ -4,12 +4,14 @@
 #include <JuceHeader.h>
 #include "Debug.h"
 #include "DataStore.h"
+#include "TrackNameTextField.h"
 
 class CustRow {
 public:
   int id = 0;
 
-  juce::TextEditor   trackName;
+  TrackNameTextField trackName;
+  // juce::TextEditor   trackName;
   juce::TextEditor   groupName;
   juce::TextEditor   directory;
   juce::ToggleButton recordOnLaunch;
@@ -17,22 +19,22 @@ public:
 
   CustRow(int newID)
     : id(newID),
-      trackName("trackName"),
+      trackName(newID, "trackName"),
       groupName("groupName")
   {
     int x = 0; int y = 40+(40*id);
 
     trackName.setBounds(x, y, 150, 30);
-    trackName.setText(DataStore::getInstance()->getTrackName(id), false);
-    trackName.onTextChange = [&] {
-      DataStore::getInstance()->setTrackName(id, trackName.getText()); 
-    };
+    // trackName.setText(DataStore::getInstance()->getTrackName(id), false);
+    // trackName.onTextChange = [&] {
+      // DataStore::getInstance()->setTrackName(id, trackName.getText()); 
+    // };
     x += trackName.getWidth();
 
     groupName.setBounds(x, y, 150, 30);
-    groupName.setText(DataStore::getInstance()->getGroupName(id), false);
+    groupName.setText(DataStore::getInstance()->getTrackName(id), false);
     groupName.onTextChange = [&] {
-      DataStore::getInstance()->setGroupName(id, groupName.getText()); 
+      DataStore::getInstance()->setTrackName(id, groupName.getText()); 
     };
     x += groupName.getWidth();
 
@@ -59,8 +61,8 @@ public:
   }
 
   void update() {
-    trackName.setText(             DataStore::getInstance()->getTrackName(id),      false );
-    groupName.setText(             DataStore::getInstance()->getGroupName(id),      false );
+    // trackName.setText(             DataStore::getInstance()->getTrackName(id),      false );
+    groupName.setText(             DataStore::getInstance()->getTrackName(id),      false );
     directory.setText(             DataStore::getInstance()->getDirectory(id),      false );
     recordOnLaunch.setToggleState( DataStore::getInstance()->getRecordOnLaunch(id), false );
     recordOnPlay.setToggleState(   DataStore::getInstance()->getRecordOnPlay(id),   false );

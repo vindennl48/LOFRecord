@@ -3,13 +3,15 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "CustTable.h"
+#include "NewTable.h"
+// #include "CustTable.h"
 
 class LOFRecordAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
     LOFRecordAudioProcessor& audioProcessor;
-    CustTable table;
+    NewTable table;
+    // CustTable table;
     
     LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor&);
     ~LOFRecordAudioProcessorEditor() override;

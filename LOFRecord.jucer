@@ -20,8 +20,12 @@
       <FILE id="p92oe0" name="DataStore.cpp" compile="1" resource="0" file="Source/DataStore.cpp"/>
       <FILE id="s67vkR" name="Listeners.h" compile="0" resource="0" file="Source/Listeners.h"/>
       <FILE id="mPzpBt" name="Listeners.cpp" compile="1" resource="0" file="Source/Listeners.cpp"/>
+      <FILE id="McbqXN" name="NewTable.cpp" compile="1" resource="0" file="Source/NewTable.cpp"/>
+      <FILE id="gR3a9N" name="NewTable.h" compile="0" resource="0" file="Source/NewTable.h"/>
       <FILE id="R5qVwb" name="DataStore.h" compile="0" resource="0" file="Source/DataStore.h"/>
       <FILE id="mkXOCp" name="Debug.h" compile="0" resource="0" file="Source/Debug.h"/>
+      <FILE id="RueH0X" name="TrackNameTextField.h" compile="0" resource="0"
+            file="Source/TrackNameTextField.h"/>
       <FILE id="PDVSFm" name="Debug.cpp" compile="1" resource="0" file="Source/Debug.cpp"/>
     </GROUP>
   </MAINGROUP>

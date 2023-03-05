@@ -7,11 +7,14 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
   : AudioProcessorEditor (&p),
     audioProcessor (p),
     table()
+    // table()
 {
   // this will run every time the plugin window opens
   setSize(800, 400);
 
-  table.addAndMakeVisible(*this);
+  addAndMakeVisible(table);
+
+  // table.addAndMakeVisible(*this); // super custom table
 }
 
 
@@ -23,10 +26,12 @@ void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (24.0f);
 
-    table.update();
+    // table.update();
 }
 
-void LOFRecordAudioProcessorEditor::resized() {}
+void LOFRecordAudioProcessorEditor::resized() {
+  table.setBounds(getLocalBounds());
+}
 
 //==============================================================================
 // OLD

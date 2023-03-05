@@ -1,6 +1,7 @@
 
 #include "PluginEditor.h"
 #include "PluginProcessor.h"
+#include "DataStore/DataStore.h"
 
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
   : AudioProcessorEditor (&p),
@@ -10,7 +11,7 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
   setSize(800, 400);
 
   trackName.setBounds(10, 10, 100, 30);
-  trackName.setText(DStore::getInstance()->getTrackName(0), juce::dontSendNotification);
+  trackName.setText(DataStore::getInstance()->getTrackName(0), juce::dontSendNotification);
   addAndMakeVisible(trackName);
 }
 
@@ -23,7 +24,7 @@ void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (24.0f);
 
-    // trackName.setText(DStore::getInstance()->getTrackName(0), juce::dontSendNotification);
+    // trackName.setText(DataStore::getInstance()->getTrackName(0), juce::dontSendNotification);
 }
 
 void LOFRecordAudioProcessorEditor::resized() {}

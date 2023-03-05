@@ -23,21 +23,21 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
             #endif
             .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
         #endif
-    )/*,
+    ),
     m_params (
         *this, nullptr,
         "Parameters",
         createParameterLayout()
-    )*/ /*,
+    ) /*,
     m_recorder() */
 #endif
 {
-  id = DStore::getInstance()->addInst();
-  // // m_params.state = juce::ValueTree("MyAudioProcessor");
-  // // Add the directory valuetree child node to the state tree
-  // m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
-  // m_params.state.addChild(juce::ValueTree("trackName"), -1, nullptr);
-  // m_params.state.addChild(juce::ValueTree("songName"),  -1, nullptr);
+  id = DataStore::getInstance()->addInst();
+  m_params.state = juce::ValueTree("MyAudioProcessor");
+  // Add the directory valuetree child node to the state tree
+  m_params.state.addChild(juce::ValueTree("trackName"), -1, nullptr);
+  m_params.state.addChild(juce::ValueTree("groupName"), -1, nullptr);
+  m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
 }
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
@@ -45,14 +45,13 @@ LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
 
 // ----------------- mitch stuff -----------------
 // Create the parameter layout
-// juce::AudioProcessorValueTreeState::ParameterLayout LOFRecordAudioProcessor::createParameterLayout()
-// {
-//     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-//     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { "gain", 1 }, "Gain", 0.0f, 1.0f, 0.5f));
-//     layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "startRecordingOnLaunch", 1 }, "Start Recording On Launch", false));
-//     layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "syncWithOtherInstances", 1 }, "Sync With Other Instances", false));
-//     return layout;
-// }
+juce::AudioProcessorValueTreeState::ParameterLayout LOFRecordAudioProcessor::createParameterLayout()
+{
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "recordOnLaunch", 1 }, "Start Recording On Launch", false));
+    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "recordOnPlay",   1 }, "Start Recording On Play",   false));
+    return layout;
+}
 
 void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
@@ -73,13 +72,13 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 //    if (m_isRecording) m_recorder.writeBufferToWav(buffer);
 
     // switch on recording if synced with other instances
-    if (getSyncWithOtherInstances()) {
-        if (m_isRecordingGlobal) {
-            startRecording();
-        } else {
-            stopRecording();
-        }
-    }
+//    if (getSyncWithOtherInstances()) {
+//        if (m_isRecordingGlobal) {
+//            startRecording();
+//        } else {
+//            stopRecording();
+//        }
+//    }
     // ----------------- mitch stuff -----------------
 
     // This is the place where you'd normally do the guts of your plugin's
@@ -99,38 +98,40 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 // Save the state of the plugin
 void LOFRecordAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
+  // load singleton state into tree
+  DataStore::getInstance()->saveState(id, m_params);
 
-  //  // Write the state of the AudioProcessorValueTreeState to a memory stream
-  //  juce::MemoryOutputStream stream(destData, true);
-  //  // m_params.state.writeToStream(stream);
+  // Write the state of the AudioProcessorValueTreeState to a memory stream
+  juce::MemoryOutputStream stream(destData, true);
+  m_params.state.writeToStream(stream);
 }
 
 // Load the state of the plugin
 void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
+  // Read the state from the data and replace the AudioProcessorValueTreeState state
+  auto tree = juce::ValueTree::readFromData(data, size_t(sizeInBytes));
+  if (tree.isValid()) {
+      m_params.replaceState(tree);
+      DataStore::getInstance()->loadState(id, m_params);
+      // m_directory              = m_params.state.getProperty("directory").toString();
+      // m_gain                   = m_params.state.getProperty("gain");
+      // m_startRecordingOnLaunch = m_params.state.getProperty("startRecordingOnLaunch");
+      // m_syncWithOtherInstances = m_params.state.getProperty("syncWithOtherInstances");
+      // m_trackName              = m_params.state.getProperty("trackName").toString();
+      // m_songName               = m_params.state.getProperty("songName").toString();
 
-  //   // Read the state from the data and replace the AudioProcessorValueTreeState state
-  //   auto tree = juce::ValueTree::readFromData(data, size_t(sizeInBytes));
-  //   if (tree.isValid()) {
-  //       // m_params.replaceState (tree);
-  //       // m_directory              = m_params.state.getProperty("directory").toString();
-  //       // m_gain                   = m_params.state.getProperty("gain");
-  //       // m_startRecordingOnLaunch = m_params.state.getProperty("startRecordingOnLaunch");
-  //       // m_syncWithOtherInstances = m_params.state.getProperty("syncWithOtherInstances");
-  //       // m_trackName              = m_params.state.getProperty("trackName").toString();
-  //       // m_songName               = m_params.state.getProperty("songName").toString();
+      // // if synced with other instances, copy song name to global song name
+      // if (getSyncWithOtherInstances()) {
+      //     m_songNameGlobal = m_songName;
+      // }
 
-  //       // if synced with other instances, copy song name to global song name
-  //       if (getSyncWithOtherInstances()) {
-  //           m_songNameGlobal = m_songName;
-  //       }
-
-  //       // start recording on launch if the user has selected that option
-  //       if (m_startRecordingOnLaunch && m_firstLaunch) {
-  //           startRecording();
-  //       }
-  //       m_firstLaunch = false;
-  //   }
+      // // start recording on launch if the user has selected that option
+      // if (m_startRecordingOnLaunch && m_firstLaunch) {
+      //     startRecording();
+      // }
+      // m_firstLaunch = false;
+  }
 }
 
 void LOFRecordAudioProcessor::startRecording()

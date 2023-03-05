@@ -1,16 +1,16 @@
 
-#include "Singleton.h"
+#include "DataStore.h"
 
 Inst::Inst(int id) : id(id) {}
 
-JUCE_IMPLEMENT_SINGLETON(DStore);
+JUCE_IMPLEMENT_SINGLETON(DataStore);
 
-int DStore::addInst() noexcept {
+int DataStore::addInst() noexcept {
   insts.add(Inst(nextID));
   return nextID++;
 }
 
-void DStore::removeInst(int id) noexcept {
+void DataStore::removeInst(int id) noexcept {
   // remove inst that matches id
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).id == id) {
@@ -20,7 +20,7 @@ void DStore::removeInst(int id) noexcept {
   }
 }
 
-juce::String DStore::getTrackName(int id) const noexcept {
+juce::String DataStore::getTrackName(int id) const noexcept {
   // return track name that matches id
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).id == id) {
@@ -30,7 +30,7 @@ juce::String DStore::getTrackName(int id) const noexcept {
   return "####";
 }
 
-void DStore::setTrackName(int id, const juce::String& name) noexcept {
+void DataStore::setTrackName(int id, const juce::String& name) noexcept {
   // set track name that matches id
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).id == id) {
@@ -38,4 +38,100 @@ void DStore::setTrackName(int id, const juce::String& name) noexcept {
       break;
     }
   }
+}
+
+juce::String DataStore::getGroupName(int id) const noexcept {
+  // return group name that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      return insts.getReference(i).groupName;
+    }
+  }
+  return "####";
+}
+
+void DataStore::setGroupName(int id, const juce::String& name) noexcept {
+  // set group name that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      insts.getReference(i).groupName = name;
+      break;
+    }
+  }
+}
+
+juce::String DataStore::getDirectory(int id) const noexcept {
+  // return directory that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      return insts.getReference(i).directory;
+    }
+  }
+  return "####";
+}
+
+void DataStore::setDirectory(int id, const juce::String& name) noexcept {
+  // set directory that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      insts.getReference(i).directory = name;
+      break;
+    }
+  }
+}
+
+bool DataStore::getRecordOnLaunch(int id) const noexcept {
+  // return recordOnLaunch that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      return insts.getReference(i).recordOnLaunch;
+    }
+  }
+  return false;
+}
+
+void DataStore::setRecordOnLaunch(int id, bool b) noexcept {
+  // set recordOnLaunch that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      insts.getReference(i).recordOnLaunch = b;
+      break;
+    }
+  }
+}
+
+bool DataStore::getRecordOnPlay(int id) const noexcept {
+  // return recordOnPlay that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      return insts.getReference(i).recordOnPlay;
+    }
+  }
+  return false;
+}
+
+void DataStore::setRecordOnPlay(int id, bool b) noexcept {
+  // set recordOnPlay that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      insts.getReference(i).recordOnPlay = b;
+      break;
+    }
+  }
+}
+
+void DataStore::saveState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
+  t.state.setProperty( "trackName",      getTrackName(id),      nullptr );
+  t.state.setProperty( "groupName",      getGroupName(id),      nullptr );
+  t.state.setProperty( "directory",      getDirectory(id),      nullptr );
+  t.state.setProperty( "recordOnLaunch", getRecordOnLaunch(id), nullptr );
+  t.state.setProperty( "recordOnPlay",   getRecordOnPlay(id),   nullptr );
+}
+
+void DataStore::loadState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
+  setTrackName(      id, t.state.getProperty("trackName").toString() );
+  setGroupName(      id, t.state.getProperty("groupName").toString() );
+  setDirectory(      id, t.state.getProperty("directory").toString() );
+  setRecordOnLaunch( id, t.state.getProperty("recordOnLaunch")       );
+  setRecordOnPlay(   id, t.state.getProperty("recordOnPlay")         );
 }

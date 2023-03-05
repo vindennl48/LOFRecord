@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "Singleton/Singleton.h"
+#include "DataStore/DataStore.h"
 
 //==============================================================================
 
@@ -56,7 +56,7 @@ public:
     void Record(bool shouldRecord);
 
     // to save the state of the plugin
-    // juce::AudioProcessorValueTreeState m_params;
+    juce::AudioProcessorValueTreeState m_params;
 
     // STATIC
     static bool m_isRecordingGlobal;

@@ -2,8 +2,9 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "../Debug.h"
 
-#define NUM_VERSIONS 36
+#define NUM_VERSIONS 4
 
 class Tree : public juce::AudioProcessorValueTreeState {
 public:
@@ -78,6 +79,8 @@ private:
   //--Custom DOES NOT save Vars---------------------- 
 
   const juce::String& _getString(const juce::Identifier& name) {
+    if (tree.state.getProperty(name).toString().isEmpty())
+      tree.state.setProperty(name, "default", nullptr);
     return tree.state.getProperty(name).toString();
   }
   void _setString(const juce::String& s, const juce::Identifier& name) {
@@ -95,38 +98,21 @@ private:
 
 class DataStore {
 public:
-  Version* versions[NUM_VERSIONS] = { nullptr };
-
-  ~DataStore() {
-    for (auto& i : versions) {
-      if (i != nullptr) {
-        delete i;
-        i = nullptr;
-      }
-    }
-  }
+  // Version* versions[NUM_VERSIONS] = { nullptr };
+  static juce::Array<Version*> versions;
 
   int create(juce::AudioProcessor& p) {
-    // max NUM_VERSIONS versions
-    if (Version::gid >= NUM_VERSIONS) return -1;
-
-    // find next available slot
-    for (auto& v : versions) {
-      if (v == nullptr) {
-        v = new Version(p);
-        return Version::gid-1;
-      }
-    }
-
-    // no slots available
-    return -1;
+    Version* v = new Version(p);
+    versions.add(v);
+    return v->id;
   }
 
   void remove(int id) {
-    for (auto& v : versions) {
-      if (v != nullptr && v->id == id) {
-        delete v;
-        v = nullptr;
+    showMessageBox("Removing Version with id: " + juce::String(id));
+    for (int i=0; i<versions.size(); i++) {
+      if (versions[i] != nullptr && versions[i]->id == id) {
+        delete versions[i];
+        versions.remove(i);
         return;
       }
     }
@@ -140,17 +126,65 @@ public:
     return get(id);
   }
 
-private:
-  Version& get(int id) {
-    if (id < 0 || id >= Version::gid) {
-      throw std::out_of_range("Version id out of range");
+  void destroyAll() {
+    showMessageBox("Removing All!");
+    for (int i=0; i<versions.size(); i++) {
+      if (versions[i] != nullptr) {
+        delete versions[i];
+      }
+      versions.remove(i);
     }
 
-    for (auto& v : versions) {
-      if (v != nullptr && v->id == id) {
-        return *v;
+    // for (auto& i : versions) {
+      // if (i != nullptr) {
+        // delete i;
+        // i = nullptr;
+      // }
+    // }
+  }
+
+private:
+  Version& get(int id) {
+    for (int i=0; i<versions.size(); i++) {
+      if (versions[i] != nullptr && versions[i]->id == id) {
+        return *versions[i];
       }
     }
+    throw std::out_of_range("Version id out of range");
+
+    // showMessageBox("Starting Function with id: " + juce::String(id) + ", Size: " + juce::String(size()));
+
+    // if (id < 0 || id >= Version::gid) {
+      // throw std::out_of_range("Version id out of range");
+    // }
+
+    // int i=0;
+    // for (auto& v : versions) {
+      // if (v != nullptr) showMessageBox(juce::String(i) + ": NON Null Found!, v->id: " + juce::String(v->id));
+      // else showMessageBox(juce::String(i) + ": Null Found!");
+      // i++;
+    // }
+
+    // for (auto& v : versions) {
+      // if (v != nullptr) {
+        // showMessageBox(
+          // "NON Null Found!, v->id: " +
+          // juce::String(v->id) + ", id: " +
+          // juce::String(id)
+        // );
+        // if (v->id == id) {
+          // showMessageBox("Returning!");
+          // return *v;
+        // }
+      // }
+
+      // // if (v != nullptr && v->id == id) {
+        // // return *v;
+      // // }
+    // }
+    
+    // showMessageBox("id: " + juce::String(id) + ", Size: " + juce::String(size()));
+    // throw std::out_of_range("Version id out of range");
   }
 };
 

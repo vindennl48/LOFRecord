@@ -1,7 +1,6 @@
 #include "DataStore.h"
 
-int Version::gid = 0;
-
+//=TREE=========================================================================
 juce::AudioProcessorValueTreeState::ParameterLayout
 Tree::createParameterLayout() {
   juce::AudioProcessorValueTreeState::ParameterLayout layout;
@@ -21,11 +20,24 @@ Tree::createParameterLayout() {
 
   return layout;
 }
+//=TREE=========================================================================
+
+
+//=VERSION======================================================================
+int Version::gid = 0;
 
 Version::Version(juce::AudioProcessor& p) : tree(p) {
+  showMessageBox("Created Version gid: " + juce::String(gid));
   id = gid++;
 }
 
 Version::~Version() {
+  showMessageBox("Version Deleted gid: " + juce::String(gid));
   gid--;
 }
+//=VERSION======================================================================
+
+
+//=DATASTORE====================================================================
+juce::Array<Version*> DataStore::versions;
+//=DATASTORE====================================================================

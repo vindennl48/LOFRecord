@@ -7,14 +7,10 @@
 */
 
 #include "PluginProcessor.h"
-#include "PluginEditor.h"
-#include <juce_core/juce_core.h>
-#include <juce_events/juce_events.h>
 
 juce::String LOFRecordAudioProcessor::m_songNameGlobal    = "default";
 bool         LOFRecordAudioProcessor::m_isRecordingGlobal = false;
 juce::int64  LOFRecordAudioProcessor::m_timeGlobal        = 0;
-DataStore    LOFRecordAudioProcessor::ds;
 
 //==============================================================================
 LOFRecordAudioProcessor::LOFRecordAudioProcessor()
@@ -36,8 +32,7 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
     m_recorder() */
 #endif
 {
-  id = ds.create(*this);
-
+  id = DStore::getInstance()->addInst();
   // // m_params.state = juce::ValueTree("MyAudioProcessor");
   // // Add the directory valuetree child node to the state tree
   // m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
@@ -45,7 +40,8 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
   // m_params.state.addChild(juce::ValueTree("songName"),  -1, nullptr);
 }
 
-LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {}
+LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
+}
 
 // ----------------- mitch stuff -----------------
 // Create the parameter layout
@@ -103,7 +99,6 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 // Save the state of the plugin
 void LOFRecordAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-  ds[id].save(destData);
 
   //  // Write the state of the AudioProcessorValueTreeState to a memory stream
   //  juce::MemoryOutputStream stream(destData, true);
@@ -113,7 +108,6 @@ void LOFRecordAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 // Load the state of the plugin
 void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-  ds[id].load(data, sizeInBytes);
 
   //   // Read the state from the data and replace the AudioProcessorValueTreeState state
   //   auto tree = juce::ValueTree::readFromData(data, size_t(sizeInBytes));

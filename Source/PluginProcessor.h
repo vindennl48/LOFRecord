@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "DataStore.h"
+#include "Singleton/Singleton.h"
 
 //==============================================================================
 
@@ -61,8 +61,6 @@ public:
     // STATIC
     static bool m_isRecordingGlobal;
     static juce::int64 m_timeGlobal;
-
-    static DataStore ds;
 
 private:
     juce::String createFilename();

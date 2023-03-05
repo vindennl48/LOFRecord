@@ -1,21 +1,91 @@
 
 #include "PluginEditor.h"
+#include "PluginProcessor.h"
 
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
   : AudioProcessorEditor (&p),
-    audioProcessor (p),
-    tabbedComponent(juce::TabbedButtonBar::TabsAtTop),
-    tabInstance(p)
+    audioProcessor (p)
 {
-    setSize(800, 400);
-    
-    auto bg_color = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
-    tabbedComponent.setBounds(getLocalBounds());
-    tabbedComponent.addTab("Instances", bg_color, &tabInstance,    true);
-    tabbedComponent.addTab("Recorded",  bg_color, new Component(), true);
-    // tabbedComponent.addTab("Editor",    bg_color, new Component(), true);
-    addAndMakeVisible(tabbedComponent);
+  // this will run every time the plugin window opens
+  setSize(800, 400);
+
+  trackName.setBounds(10, 10, 100, 30);
+  trackName.setText(DStore::getInstance()->getTrackName(0), juce::dontSendNotification);
+  addAndMakeVisible(trackName);
 }
+
+
+LOFRecordAudioProcessorEditor::~LOFRecordAudioProcessorEditor() {}
+
+void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
+{
+    g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    g.setColour (juce::Colours::white);
+    g.setFont (24.0f);
+
+    // trackName.setText(DStore::getInstance()->getTrackName(0), juce::dontSendNotification);
+}
+
+void LOFRecordAudioProcessorEditor::resized() {}
+
+//==============================================================================
+// OLD
+//==============================================================================
+
+/*
+void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
+{
+    g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    g.setColour (juce::Colours::white);
+    g.setFont (24.0f);
+    // trackNameTextBox.setText(audioProcessor.m_debug, false);
+
+    songNameTextBox.setText(audioProcessor.getSongName(), false);
+    trackNameTextBox.setText(audioProcessor.getTrackName(), false);
+
+    if (audioProcessor.isRecording())
+    {
+        recordingStatusLabel.setText("RECORDING!", juce::dontSendNotification);
+        recordingStatusLabel.setColour(juce::Label::textColourId, juce::Colours::red);
+
+        recordingButton.setButtonText("Stop Recording");
+
+        // disable checkboxes
+        startRecordingOnLaunchButton.setEnabled(false);
+        syncWithOtherInstancesButton.setEnabled(false);
+
+        // disable textboxes
+        songNameTextBox.setEnabled(false);
+        directoryTextBox.setEnabled(false);
+        trackNameTextBox.setEnabled(false);
+
+        // disable directoryButton
+        directoryButton.setEnabled(false);
+    }
+    else
+    {
+        recordingStatusLabel.setText("Not Recording..", juce::dontSendNotification);
+        recordingStatusLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+
+        recordingButton.setButtonText("Start Recording");
+
+        // enable checkboxes
+        startRecordingOnLaunchButton.setEnabled(true);
+        syncWithOtherInstancesButton.setEnabled(true);
+
+        // enable textboxes
+        songNameTextBox.setEnabled(true);
+        directoryTextBox.setEnabled(true);
+        trackNameTextBox.setEnabled(true);
+
+        // enable directoryButton
+        directoryButton.setEnabled(true);
+    }
+
+    // debugTextBox.setText(audioProcessor.m_params.state.getProperty("songName").toString(), false);
+    // debugTextBox2.setText(audioProcessor.m_params.state.getProperty("songNameGlobal").toString(), false);
+}
+*/
 
 /*
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
@@ -129,70 +199,3 @@ LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProc
     // addAndMakeVisible(debugTextBox2);
 }
 */
-
-LOFRecordAudioProcessorEditor::~LOFRecordAudioProcessorEditor()
-{
-}
-
-//==============================================================================
-void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
-{
-    g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    g.setColour (juce::Colours::white);
-    g.setFont (24.0f);
-/*
-    // trackNameTextBox.setText(audioProcessor.m_debug, false);
-
-    songNameTextBox.setText(audioProcessor.getSongName(), false);
-    trackNameTextBox.setText(audioProcessor.getTrackName(), false);
-
-    if (audioProcessor.isRecording())
-    {
-        recordingStatusLabel.setText("RECORDING!", juce::dontSendNotification);
-        recordingStatusLabel.setColour(juce::Label::textColourId, juce::Colours::red);
-
-        recordingButton.setButtonText("Stop Recording");
-
-        // disable checkboxes
-        startRecordingOnLaunchButton.setEnabled(false);
-        syncWithOtherInstancesButton.setEnabled(false);
-
-        // disable textboxes
-        songNameTextBox.setEnabled(false);
-        directoryTextBox.setEnabled(false);
-        trackNameTextBox.setEnabled(false);
-
-        // disable directoryButton
-        directoryButton.setEnabled(false);
-    }
-    else
-    {
-        recordingStatusLabel.setText("Not Recording..", juce::dontSendNotification);
-        recordingStatusLabel.setColour(juce::Label::textColourId, juce::Colours::black);
-
-        recordingButton.setButtonText("Start Recording");
-
-        // enable checkboxes
-        startRecordingOnLaunchButton.setEnabled(true);
-        syncWithOtherInstancesButton.setEnabled(true);
-
-        // enable textboxes
-        songNameTextBox.setEnabled(true);
-        directoryTextBox.setEnabled(true);
-        trackNameTextBox.setEnabled(true);
-
-        // enable directoryButton
-        directoryButton.setEnabled(true);
-    }
-
-    // debugTextBox.setText(audioProcessor.m_params.state.getProperty("songName").toString(), false);
-    // debugTextBox2.setText(audioProcessor.m_params.state.getProperty("songNameGlobal").toString(), false);
-
-*/
-}
-
-void LOFRecordAudioProcessorEditor::resized()
-{
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
-}

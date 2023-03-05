@@ -6,21 +6,23 @@
               pluginFormats="buildAU,buildStandalone" defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="XryX0P" name="LOFRecord">
     <GROUP id="{7F4C2784-B828-1BEF-0EEA-91810E11E7C3}" name="Source">
-      <FILE id="GwitsD" name="PluginProcessor_unused.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor_unused.cpp"/>
-      <FILE id="eEGcLa" name="PluginProcessor_getset.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor_getset.cpp"/>
-      <FILE id="q8GBEO" name="PluginProcessor.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor.cpp"/>
+      <GROUP id="{71D3989B-3446-F352-B9BA-39BBC1631AB5}" name="DataStore">
+        <FILE id="fDOa01" name="DataStore.h" compile="0" resource="0" file="Source/DataStore/DataStore.h"/>
+        <FILE id="cGqIPp" name="DataStore.cpp" compile="1" resource="0" file="Source/DataStore/DataStore.cpp"/>
+      </GROUP>
       <FILE id="mskri8" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="MwCY2s" name="TabInstance.h" compile="0" resource="0" file="Source/TabInstance.h"/>
+      <FILE id="q8GBEO" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="eEGcLa" name="PluginProcessor_getset.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor_getset.cpp"/>
+      <FILE id="GwitsD" name="PluginProcessor_unused.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor_unused.cpp"/>
+      <FILE id="aUo1Fx" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="dKx10f" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
-      <FILE id="U2KZtQ" name="DataStore.h" compile="0" resource="0" file="Source/DataStore.h"/>
-      <FILE id="nDeXlZ" name="DataStore.cpp" compile="1" resource="0" file="Source/DataStore.cpp"/>
-      <FILE id="aUo1Fx" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <FILE id="qME4EV" name="TabInstance.cpp" compile="1" resource="0" file="Source/TabInstance.cpp"/>
+      <FILE id="mkXOCp" name="Debug.h" compile="0" resource="0" file="Source/Debug.h"/>
+      <FILE id="PDVSFm" name="Debug.cpp" compile="1" resource="0" file="Source/Debug.cpp"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

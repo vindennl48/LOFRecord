@@ -1,7 +1,7 @@
 
 #include "PluginEditor.h"
 #include "PluginProcessor.h"
-#include "DataStore/DataStore.h"
+#include "DataStore.h"
 
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
   : AudioProcessorEditor (&p),

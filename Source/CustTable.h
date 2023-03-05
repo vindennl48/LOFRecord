@@ -3,7 +3,7 @@
 
 #include <JuceHeader.h>
 #include "Debug.h"
-#include "DataStore/DataStore.h"
+#include "DataStore.h"
 
 class CustRow {
 public:
@@ -17,8 +17,7 @@ public:
       trackName("trackName"),
       groupName("groupName")
   {
-    // showMessageBox("Creating CustRow: " + juce::String(id));
-    int x = 0; int y = 20+(40*id);
+    int x = 0; int y = 40+(40*id);
 
     trackName.setBounds(x, y, 150, 30);
     trackName.setText(DataStore::getInstance()->getTrackName(id), false);
@@ -37,9 +36,7 @@ public:
 
   void update() {
     trackName.setText(DataStore::getInstance()->getTrackName(id), false);
-    // SET AS TRACK NAME AS A TEST
-    // TODO: SET AS GROUP NAME
-    groupName.setText(DataStore::getInstance()->getTrackName(id), false);
+    groupName.setText(DataStore::getInstance()->getGroupName(id), false);
   }
 
   int size() { return 2; } // Number of variables

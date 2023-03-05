@@ -1,9 +1,6 @@
 
 
 #include "PluginProcessor.h"
-// #include "PluginEditor.h"
-// #include <juce_core/juce_core.h>
-// #include <juce_events/juce_events.h>
 
 
 // Get the directory

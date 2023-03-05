@@ -1,6 +1,6 @@
 
 #include "DataStore.h"
-#include "../Debug.h"
+#include "Debug.h"
 
 Inst::Inst(int id) : id(id) {}
 

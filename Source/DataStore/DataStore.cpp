@@ -20,6 +20,10 @@ void DataStore::removeInst(int id) noexcept {
   }
 }
 
+int DataStore::size() const noexcept {
+  return insts.size();
+}
+
 juce::String DataStore::getTrackName(int id) const noexcept {
   // return track name that matches id
   for (int i = 0; i < insts.size(); ++i) {

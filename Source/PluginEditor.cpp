@@ -5,14 +5,13 @@
 
 LOFRecordAudioProcessorEditor::LOFRecordAudioProcessorEditor (LOFRecordAudioProcessor& p)
   : AudioProcessorEditor (&p),
-    audioProcessor (p)
+    audioProcessor (p),
+    table()
 {
   // this will run every time the plugin window opens
   setSize(800, 400);
 
-  trackName.setBounds(10, 10, 100, 30);
-  trackName.setText(DataStore::getInstance()->getTrackName(0), juce::dontSendNotification);
-  addAndMakeVisible(trackName);
+  table.addAndMakeVisible(*this);
 }
 
 
@@ -23,8 +22,6 @@ void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     g.setColour (juce::Colours::white);
     g.setFont (24.0f);
-
-    // trackName.setText(DataStore::getInstance()->getTrackName(0), juce::dontSendNotification);
 }
 
 void LOFRecordAudioProcessorEditor::resized() {}

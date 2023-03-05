@@ -114,12 +114,6 @@ void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInB
   if (tree.isValid()) {
       m_params.replaceState(tree);
       DataStore::getInstance()->loadState(id, m_params);
-      // m_directory              = m_params.state.getProperty("directory").toString();
-      // m_gain                   = m_params.state.getProperty("gain");
-      // m_startRecordingOnLaunch = m_params.state.getProperty("startRecordingOnLaunch");
-      // m_syncWithOtherInstances = m_params.state.getProperty("syncWithOtherInstances");
-      // m_trackName              = m_params.state.getProperty("trackName").toString();
-      // m_songName               = m_params.state.getProperty("songName").toString();
 
       // // if synced with other instances, copy song name to global song name
       // if (getSyncWithOtherInstances()) {

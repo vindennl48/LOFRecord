@@ -20,6 +20,7 @@ public:
   // getters and setters
   int addInst() noexcept;
   void removeInst(int id) noexcept;
+  int size() const noexcept;
 
   juce::String getTrackName(int id) const noexcept;
   void setTrackName(int id, const juce::String& name) noexcept;

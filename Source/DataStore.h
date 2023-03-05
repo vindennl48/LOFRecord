@@ -8,7 +8,7 @@ struct Inst {
 
   juce::String trackName = "default";
   juce::String groupName = "default";
-  juce::String directory = "/";
+  juce::String directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
   bool recordOnLaunch    = false;
   bool recordOnPlay      = false;
 

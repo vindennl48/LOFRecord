@@ -1,7 +1,8 @@
 
 #include "NewTable.h"
 #include "DataStore.h"
-#include "TrackNameTextField.h"
+#include "CustomComponents.h"
+#include "Debug.h"
 
 NewTable::NewTable()
 {
@@ -60,16 +61,25 @@ void NewTable::paintCell(juce::Graphics& g, int rowNumber, int columnId, int wid
 }
 
 juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, juce::Component* existingComponentToUpdate) {
+  printToConsole(S("----> ") + S("rowNumber: ") + S(rowNumber) + S(", DS Size: ") + S(DataStore::getInstance()->size()));
+  if (rowNumber >= DataStore::getInstance()->size()) return nullptr;
+
   switch (columnId) {
     case trackColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new TrackNameTextField(rowNumber, "trackName" + juce::String(rowNumber));
+        return new TrackNameTextField(rowNumber, "trackName-" + juce::String(rowNumber));
       }
       break;
 
     case groupColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new TrackNameTextField(rowNumber, "groupName" + juce::String(rowNumber));
+        return new GroupNameTextField(rowNumber, "groupName-" + juce::String(rowNumber));
+      }
+      break;
+
+    case directoryColumn:
+      if (existingComponentToUpdate == nullptr) {
+        return new DirectoryButton(rowNumber, "directory-" + juce::String(rowNumber));
       }
       break;
 

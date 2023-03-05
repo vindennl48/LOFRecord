@@ -7,6 +7,7 @@ Inst::Inst(int id) : id(id) {}
 JUCE_IMPLEMENT_SINGLETON(DataStore);
 
 int DataStore::addInst() noexcept {
+  printToConsole(S("----> ") + S("ADDING DATASTORE OBJ! ") + S(nextID));
   insts.add(Inst(nextID));
   return nextID++;
 }
@@ -22,7 +23,7 @@ void DataStore::removeInst(int id) noexcept {
 }
 
 int DataStore::size() const noexcept {
-  insts.size();
+  return insts.size();
 }
 
 juce::String DataStore::getTrackName(int id) const noexcept {
@@ -32,7 +33,9 @@ juce::String DataStore::getTrackName(int id) const noexcept {
       return insts.getReference(i).trackName;
     }
   }
-  return "####";
+  printToConsole(S("----> ") + S("DataStore::getTrackName() - id not found: ") + S(id));
+  throw std::runtime_error("DataStore::getTrackName() - id not found");
+  // return "####";
 }
 
 void DataStore::setTrackName(int id, const juce::String& name) noexcept {
@@ -54,7 +57,9 @@ juce::String DataStore::getGroupName(int id) const noexcept {
       return insts.getReference(i).groupName;
     }
   }
-  return "####";
+  printToConsole(S("----> ") + S("DataStore::getGroupName() - id not found: ") + S(id));
+  throw std::runtime_error("DataStore::getGroupName() - id not found");
+  // return "####";
 }
 
 void DataStore::setGroupName(int id, const juce::String& name) noexcept {
@@ -74,7 +79,9 @@ juce::String DataStore::getDirectory(int id) const noexcept {
       return insts.getReference(i).directory;
     }
   }
-  return "####";
+  printToConsole(S("----> ") + S("DataStore::getDirectory() - id not found: ") + S(id));
+  throw std::runtime_error("DataStore::getDirectory() - id not found");
+  // return "####";
 }
 
 void DataStore::setDirectory(int id, const juce::String& name) noexcept {

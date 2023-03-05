@@ -1,5 +1,6 @@
 
 #include "DataStore.h"
+#include "../Debug.h"
 
 Inst::Inst(int id) : id(id) {}
 
@@ -21,7 +22,7 @@ void DataStore::removeInst(int id) noexcept {
 }
 
 int DataStore::size() const noexcept {
-  return insts.size();
+  insts.size();
 }
 
 juce::String DataStore::getTrackName(int id) const noexcept {
@@ -35,10 +36,12 @@ juce::String DataStore::getTrackName(int id) const noexcept {
 }
 
 void DataStore::setTrackName(int id, const juce::String& name) noexcept {
+  // showMessageBox("Setting Track id: " + juce::String(id) + " and name: " + name);
   // set track name that matches id
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).id == id) {
       insts.getReference(i).trackName = name;
+      // showMessageBox("SET!");
       break;
     }
   }

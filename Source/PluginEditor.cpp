@@ -22,6 +22,8 @@ void LOFRecordAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     g.setColour (juce::Colours::white);
     g.setFont (24.0f);
+
+    table.update();
 }
 
 void LOFRecordAudioProcessorEditor::resized() {}

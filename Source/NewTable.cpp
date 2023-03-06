@@ -32,7 +32,7 @@ int NewTable::getNumRows() {
 }
 
 void NewTable::paintRowBackground(juce::Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
-  if (rowNumber == id) {
+  if (id == DataStore::getInstance()->getIDFromPos(rowNumber)) {
     g.fillAll(juce::Colours::lightblue);
   }
 }
@@ -64,35 +64,37 @@ void NewTable::paintCell(juce::Graphics& g, int rowNumber, int columnId, int wid
 juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, juce::Component* existingComponentToUpdate) {
   // printToConsole(S("----> ") + S("rowNumber: ") + S(rowNumber) + S(", DS Size: ") + S(DataStore::getInstance()->size()));
   if (rowNumber >= DataStore::getInstance()->size()) return nullptr;
+  int rowID = DataStore::getInstance()->getIDFromPos(rowNumber);
+  if (rowID == -1) return nullptr;
 
   switch (columnId) {
     case trackColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new TrackNameTextField(rowNumber, "trackName-" + juce::String(rowNumber));
+        return new TrackNameTextField(rowID, "trackName-" + juce::String(rowID));
       }
       break;
 
     case groupColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new GroupNameTextField(rowNumber, "groupName-" + juce::String(rowNumber));
+        return new GroupNameTextField(rowID, "groupName-" + juce::String(rowID));
       }
       break;
 
     case directoryColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new DirectoryButton(rowNumber, "directory-" + juce::String(rowNumber));
+        return new DirectoryButton(rowID, "directory-" + juce::String(rowID));
       }
       break;
 
     case recordColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new RecordButton(rowNumber, "record-" + juce::String(rowNumber));
+        return new RecordButton(rowID, "record-" + juce::String(rowID));
       }
       break;
 
     case recordOnLaunchColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new RecordOnLaunchButton(rowNumber, "recordOnLaunch-" + juce::String(rowNumber));
+        return new RecordOnLaunchButton(rowID, "recordOnLaunch-" + juce::String(rowID));
       }
       break;
 

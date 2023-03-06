@@ -9,7 +9,10 @@ JUCE_IMPLEMENT_SINGLETON(DataStore);
 int DataStore::addInst(juce::AudioProcessorValueTreeState& t) noexcept {
   // printToConsole(S("----> ") + S("ADDING DATASTORE OBJ! ") + S(nextID));
   insts.add(Inst(nextID, t));
-  return nextID++;
+  int result = nextID;
+  nextID += 1;
+  printToConsole(S("----> Adding ID ") + S(result) + S(" To Datastore!"));
+  return result;
 }
 
 void DataStore::removeInst(int id) noexcept {
@@ -17,6 +20,7 @@ void DataStore::removeInst(int id) noexcept {
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).id == id) {
       insts.remove(i);
+        printToConsole(S("----> Removing ID ") + S(id) + S(" From Datastore!"));
       break;
     }
   }
@@ -33,8 +37,9 @@ juce::String DataStore::getTrackName(int id) const noexcept {
       return insts.getReference(i).trackName;
     }
   }
-  // printToConsole(S("----> ") + S("DataStore::getTrackName() - id not found: ") + S(id));
-  throw std::runtime_error("DataStore::getTrackName() - id not found");
+  printToConsole(S("####> ERROR> ") + S("DataStore::getTrackName() - id not found: ") + S(id));
+  jassertfalse;
+  // throw std::runtime_error("DataStore::getTrackName() - id not found");
   // return "####";
 }
 
@@ -57,8 +62,9 @@ juce::String DataStore::getGroupName(int id) const noexcept {
       return insts.getReference(i).groupName;
     }
   }
-  // printToConsole(S("----> ") + S("DataStore::getGroupName() - id not found: ") + S(id));
-  throw std::runtime_error("DataStore::getGroupName() - id not found");
+  printToConsole(S("####> ERROR> ") + S("DataStore::getGroupName() - id not found: ") + S(id));
+  jassertfalse;
+  // throw std::runtime_error("DataStore::getGroupName() - id not found");
   // return "####";
 }
 
@@ -79,8 +85,9 @@ juce::String DataStore::getDirectory(int id) const noexcept {
       return insts.getReference(i).directory;
     }
   }
-  // printToConsole(S("----> ") + S("DataStore::getDirectory() - id not found: ") + S(id));
-  throw std::runtime_error("DataStore::getDirectory() - id not found");
+  printToConsole(S("####> ERROR> ") + S("DataStore::getDirectory() - id not found: ") + S(id));
+  jassertfalse;
+  // throw std::runtime_error("DataStore::getDirectory() - id not found");
   // return "####";
 }
 
@@ -177,6 +184,12 @@ void DataStore::setAllRecording(int id, bool b) noexcept {
       setIsRecording(i, b);
     }
   }
+}
+
+int DataStore::getIDFromPos(int pos) const noexcept {
+  if (pos < 0 || pos >= insts.size())
+    return -1;
+  return insts.getReference(pos).id;
 }
 
 juce::int64 DataStore::getTime(int id) noexcept {

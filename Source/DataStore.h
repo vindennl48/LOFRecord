@@ -45,6 +45,12 @@ public:
   void setIsRecording(int id, bool b) noexcept;
   void setAllRecording(int id, bool b) noexcept;
 
+  /**
+   * Used to get the id from the instance in the array at a specific position.
+   * Need this for the custom table component.
+   * */
+  int getIDFromPos(int pos) const noexcept;
+
   juce::int64 getTime(int id) noexcept;
   void setTime(int id, juce::int64 t) noexcept;
 

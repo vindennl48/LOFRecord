@@ -62,7 +62,7 @@ void NewTable::paintCell(juce::Graphics& g, int rowNumber, int columnId, int wid
 }
 
 juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, juce::Component* existingComponentToUpdate) {
-  printToConsole(S("----> ") + S("rowNumber: ") + S(rowNumber) + S(", DS Size: ") + S(DataStore::getInstance()->size()));
+  // printToConsole(S("----> ") + S("rowNumber: ") + S(rowNumber) + S(", DS Size: ") + S(DataStore::getInstance()->size()));
   if (rowNumber >= DataStore::getInstance()->size()) return nullptr;
 
   switch (columnId) {

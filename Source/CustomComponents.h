@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include "DataStore.h"
+#include "Debug.h"
 
 class TrackNameTextField : public juce::TextEditor
 {
@@ -111,6 +112,7 @@ public:
   void setListener() {
     // Need to add in some things to sync instances and shizz
     onClick = [&] {
+      // printToConsole(S("Record button clicked, id: ") + S(id));
       DataStore::getInstance()->setAllRecording(id, !DataStore::getInstance()->getIsRecording(id));
     };
   }

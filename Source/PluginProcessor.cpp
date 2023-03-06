@@ -104,20 +104,23 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 
     if (DataStore::getInstance()->getIsRecording(id)) {
       if (!isRecording) {
-//        wavSave->startRecording(
-//          buffer.getNumChannels(),
-//          getSampleRate(),
-//          buffer.getNumSamples()
-//        );
+        wavSave->startRecording(
+          buffer.getNumChannels(),
+          getSampleRate(),
+          buffer.getNumSamples()
+        );
         isRecording = true;
       } else {
         // recording stuff goes here
-//        wavSave.add(buffer);
-        printToConsole(S("----> Recording! id: ") + S(id));
+        wavSave->add(buffer);
+        // printToConsole(S("----> Recording! id: ") + S(id));
       }
     } else {
       // reset
-      if (isRecording) isRecording = false;
+      if (isRecording) {
+        isRecording = false;
+        wavSave->stopRecording();
+      }
     }
 
     // This is the place where you'd normally do the guts of your plugin's

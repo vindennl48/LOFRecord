@@ -7,7 +7,7 @@ Inst::Inst(int id, juce::AudioProcessorValueTreeState& t) : id(id), t(t) {}
 JUCE_IMPLEMENT_SINGLETON(DataStore);
 
 int DataStore::addInst(juce::AudioProcessorValueTreeState& t) noexcept {
-  printToConsole(S("----> ") + S("ADDING DATASTORE OBJ! ") + S(nextID));
+  // printToConsole(S("----> ") + S("ADDING DATASTORE OBJ! ") + S(nextID));
   insts.add(Inst(nextID, t));
   return nextID++;
 }
@@ -33,7 +33,7 @@ juce::String DataStore::getTrackName(int id) const noexcept {
       return insts.getReference(i).trackName;
     }
   }
-  printToConsole(S("----> ") + S("DataStore::getTrackName() - id not found: ") + S(id));
+  // printToConsole(S("----> ") + S("DataStore::getTrackName() - id not found: ") + S(id));
   throw std::runtime_error("DataStore::getTrackName() - id not found");
   // return "####";
 }
@@ -57,7 +57,7 @@ juce::String DataStore::getGroupName(int id) const noexcept {
       return insts.getReference(i).groupName;
     }
   }
-  printToConsole(S("----> ") + S("DataStore::getGroupName() - id not found: ") + S(id));
+  // printToConsole(S("----> ") + S("DataStore::getGroupName() - id not found: ") + S(id));
   throw std::runtime_error("DataStore::getGroupName() - id not found");
   // return "####";
 }
@@ -79,7 +79,7 @@ juce::String DataStore::getDirectory(int id) const noexcept {
       return insts.getReference(i).directory;
     }
   }
-  printToConsole(S("----> ") + S("DataStore::getDirectory() - id not found: ") + S(id));
+  // printToConsole(S("----> ") + S("DataStore::getDirectory() - id not found: ") + S(id));
   throw std::runtime_error("DataStore::getDirectory() - id not found");
   // return "####";
 }
@@ -166,8 +166,10 @@ void DataStore::setAllRecording(int id, bool b) noexcept {
       groupName = insts.getReference(i).groupName;
       break;
     }
-    return; // if we cant find the instance
   }
+
+  if (groupName.isEmpty())
+    return; // if we cant find the instance
 
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).groupName == groupName) {

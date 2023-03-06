@@ -2,13 +2,14 @@
 
 #include <JuceHeader.h>
 #include "DataStore.h"
+#include "Debug.h"
 
 #define NUM_BLOCKS 64
 
 class WavSave : public juce::Thread {
   juce::AbstractFifo       fifo;
   juce::AudioBuffer<float> buffer;
-  juce::String             filePath;
+  juce::String             filepath;
   int numChannels;
   int sampleRate;
   int bitDepth;
@@ -60,7 +61,16 @@ public:
     numChannels = newNumChannels;
     sampleRate  = newSampleRate;
     bufferSize  = newBufferSize;
-    filePath    = createFilename();
+
+    juce::String parent   = DataStore::getInstance()->getDirectory(id);
+    juce::String filename = createFilename();
+
+    filepath = parent + "/" + filename;
+
+    printToConsole(S("----> Num Channels: ") + S(numChannels));
+    printToConsole(S("----> Sample Rate:  ") + S(sampleRate));
+    printToConsole(S("----> Buffer Size:  ") + S(bufferSize));
+    printToConsole(S("----> File Path:    ") + S(filepath));
 
     buffer.setSize(numChannels, bufferSize * NUM_BLOCKS);
     buffer.clear();
@@ -70,6 +80,7 @@ public:
   }
 
   void stopRecording() {
+    if (!isThreadRunning()) return;
     stopThread(1000);
   }
 
@@ -102,7 +113,7 @@ public:
     auto writer = wavFormat.createWriterFor(
       new juce::FileOutputStream(
         juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
-        .getChildFile(filePath)
+        .getChildFile(filepath)
       ),
       sampleRate, numChannels, bitDepth, {}, 0
     );

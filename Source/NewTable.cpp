@@ -13,12 +13,13 @@ NewTable::NewTable(int newID) : id(newID)
   table.setHeader([&]
   {
     auto header = std::make_unique<juce::TableHeaderComponent>();
-    header->addColumn( "Track",     trackColumn,          133, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "Group",     groupColumn,          133, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "Directory", directoryColumn,      133, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "Record",    recordColumn,         133, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "On Launch", recordOnLaunchColumn, 133, 30, -1, juce::TableHeaderComponent::notSortable );
-    header->addColumn( "On Play",   recordOnPlayColumn,   133, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "This",      currentColumn,         30, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "Track",     trackColumn,          128, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "Group",     groupColumn,          128, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "Directory", directoryColumn,      128, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "Record",    recordColumn,         128, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "On Launch", recordOnLaunchColumn, 128, 30, -1, juce::TableHeaderComponent::notSortable );
+    header->addColumn( "On Play",   recordOnPlayColumn,   128, 30, -1, juce::TableHeaderComponent::notSortable );
     return header;
   }());
 }
@@ -38,8 +39,16 @@ void NewTable::paintRowBackground(juce::Graphics& g, int rowNumber, int width, i
 }
 
 void NewTable::paintCell(juce::Graphics& g, int rowNumber, int columnId, int width, int height, bool rowIsSelected) {
-  // g.setColour(Colours::black);
-  // g.setFont(14.0f);
+  g.setColour(juce::Colours::black);
+  g.setFont(14.0f);
+
+  switch (columnId) {
+    case currentColumn:
+      if (id == DataStore::getInstance()->getIDFromPos(rowNumber)) {
+        g.drawText(">>", 0, 0, width, height, juce::Justification::centred, true);
+      }
+      break;
+  };
 
   // auto track = DataStore::getInstance()->getTrack(rowNumber);
   // switch (columnId) {
@@ -96,6 +105,11 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
       if (existingComponentToUpdate == nullptr) {
         return new RecordOnLaunchButton(rowID, "recordOnLaunch-" + juce::String(rowID));
       }
+      break;
+
+    case currentColumn:
+      delete existingComponentToUpdate;
+      existingComponentToUpdate = nullptr;
       break;
 
     default:

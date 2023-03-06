@@ -17,7 +17,8 @@ public:
 private:
 
   enum {
-    trackColumn = 1,
+    currentColumn = 1,
+    trackColumn,
     groupColumn,
     directoryColumn,
     recordColumn,

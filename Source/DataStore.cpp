@@ -48,8 +48,8 @@ void DataStore::setTrackName(int id, const juce::String& name) noexcept {
   // set track name that matches id
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).id == id) {
-      insts.getReference(i).trackName = name;
-      // showMessageBox("SET!");
+      insts.getReference(i).trackName =
+        name.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
       break;
     }
   }
@@ -72,7 +72,8 @@ void DataStore::setGroupName(int id, const juce::String& name) noexcept {
   // set group name that matches id
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).id == id) {
-      insts.getReference(i).groupName = name;
+      insts.getReference(i).groupName =
+        name.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
       break;
     }
   }

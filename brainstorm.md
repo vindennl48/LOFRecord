@@ -1,23 +1,27 @@
 # LOF Recording Plugin
 
 ## TODO
-- Would be nice to increase the height of the rows slightly so the highlighted
-  row was more pronounced.
-- Fix issue with Record on Launch, it is not updating the dropdown in Ableton's
-  config section.  It does for everything else though
-- still need to add in text filtering to the text boxes.  cant have any special
-  characters or spaces (and would like to prevent capitals as well)
 - Really need to add a way we can change the entire group name instead of having
   to do one at a time.  when changing between songs at practice, it would be
   very helpful to only have to do it once.
   - Maybe a button with a popup to type in instead?
+
 - Need to add tabs back in
+
+- Would be nice to be able to re-arrange the order of the instances.
+  - Could probably do this by moving them around inside the insts array.
+
 - Update the plugin screen without having to mouse over objects.  The Paint
   function is just not cutting it, need something faster.
+
 - Disable all text input and button presses while recording (not that it should
   really screw with anything but it should be there)
   - probably want to wait till we fix the plugin updating first since nothing
     will auto-disable until the mouse interacts with it.
+
+- Fix issue with Record on Launch, it is not updating the dropdown in Ableton's
+  config section.  It does for everything else though
+  - Might have issues with this till we link everything with the valuetree
 
 ## Features
 

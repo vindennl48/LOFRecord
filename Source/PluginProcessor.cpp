@@ -43,6 +43,7 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
   delete listeners;
+  DataStore::getInstance()->removeInst(id);
 }
 
 // ----------------- mitch stuff -----------------
@@ -157,51 +158,10 @@ void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInB
       m_params.replaceState(tree);
       DataStore::getInstance()->loadState(id, m_params);
 
-      // // if synced with other instances, copy song name to global song name
-      // if (getSyncWithOtherInstances()) {
-      //     m_songNameGlobal = m_songName;
-      // }
-
-      // // start recording on launch if the user has selected that option
-      // if (m_startRecordingOnLaunch && m_firstLaunch) {
-      //     startRecording();
-      // }
-      // m_firstLaunch = false;
+      // if start record is checked, lets start recording
+      if (isFirstLaunch && DataStore::getInstance()->getRecordOnLaunch(id)) {
+        DataStore::getInstance()->setIsRecording(id, true);
+        isFirstLaunch = false;
+      }
   }
 }
-
-// // create the filename from the directory and track name
-// juce::String LOFRecordAudioProcessor::createFilename()
-// {
-//   // format is going to be date-time-songname-trackname-count.wav
-// 
-//   // get current date as yymmdd
-//   juce::String date = juce::Time::getCurrentTime().formatted("%y%m%d");
-// 
-//   // get current time of day in ms starting from midnight
-//   juce::int64 time;
-//   if (DataStore::getInstance()->getTime(id) != 0) {
-//     time = DataStore::getInstance()->getTime(id);
-//     DataStore::getInstance()->setTime(id, 0);
-//   } else {
-//     time = juce::Time::getCurrentTime().toMilliseconds() % 86400000;
-//   }
-// 
-//   // join date, time, song name, track name
-//   juce::String filename = date + "-" + juce::String(time) + "-" + getSongName() + "-" + getTrackName() + "-";
-// 
-//   // get the number of files in the directory starting with filename
-//   juce::File directory = juce::File(getDirectory());
-//   // create filename search string that removes time from the middle
-//   juce::String search = date + "-*" + "-" + getSongName() + "-" + getTrackName() + "-*";
-//   // count all files in directory that start with search string
-//   juce::Array<juce::File> files = directory.findChildFiles(juce::File::TypesOfFileToFind::findFiles, true, search);
-//   // set a variable 'count' to the number of files found
-//   int count = files.size();
-// 
-//   // join filename and count with 3 digits and .wav, pad with zeros if needed
-//   filename = filename + juce::String(count).paddedLeft('0', 3) + ".wav";
-// 
-//   return filename;
-// }
-

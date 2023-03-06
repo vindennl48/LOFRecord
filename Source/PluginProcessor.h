@@ -39,7 +39,7 @@ public:
     // void Record(bool shouldRecord);
 
 private:
-    bool m_firstLaunch = true;  // only true on first launch
+    bool isFirstLaunch = true;  // only true on first launch
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
     void getStateInformation (juce::MemoryBlock& destData) override;

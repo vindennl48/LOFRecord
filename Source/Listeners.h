@@ -5,7 +5,7 @@
 
 class Listeners : public juce::AudioProcessorValueTreeState::Listener {
 public:
-    Listeners(int id, juce::AudioProcessorValueTreeState& vts);
+    Listeners(int newID, juce::AudioProcessorValueTreeState& vts);
     ~Listeners();
 
     void parameterChanged(const juce::String& parameterID, float newValue) override;

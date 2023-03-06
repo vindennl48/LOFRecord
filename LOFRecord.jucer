@@ -10,8 +10,6 @@
             file="Source/PluginProcessor.h"/>
       <FILE id="q8GBEO" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
-      <FILE id="eEGcLa" name="PluginProcessor_getset.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor_getset.cpp"/>
       <FILE id="GwitsD" name="PluginProcessor_unused.cpp" compile="1" resource="0"
             file="Source/PluginProcessor_unused.cpp"/>
       <FILE id="aUo1Fx" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
@@ -24,9 +22,10 @@
       <FILE id="gR3a9N" name="NewTable.h" compile="0" resource="0" file="Source/NewTable.h"/>
       <FILE id="R5qVwb" name="DataStore.h" compile="0" resource="0" file="Source/DataStore.h"/>
       <FILE id="mkXOCp" name="Debug.h" compile="0" resource="0" file="Source/Debug.h"/>
-      <FILE id="RueH0X" name="TrackNameTextField.h" compile="0" resource="0"
-            file="Source/TrackNameTextField.h"/>
       <FILE id="PDVSFm" name="Debug.cpp" compile="1" resource="0" file="Source/Debug.cpp"/>
+      <FILE id="zbHsZM" name="CustomComponents.h" compile="0" resource="0"
+            file="Source/CustomComponents.h"/>
+      <FILE id="IAzRd1" name="WavSave.h" compile="0" resource="0" file="Source/WavSave.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

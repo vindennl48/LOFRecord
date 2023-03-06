@@ -3,9 +3,9 @@
 #include "DataStore.h"
 #include "Debug.h"
 
-Listeners::Listeners(int id, juce::AudioProcessorValueTreeState& vts)
+Listeners::Listeners(int newID, juce::AudioProcessorValueTreeState& vts)
     : valueTreeState(vts),
-      id(0)
+      id(newID)
 {
   valueTreeState.addParameterListener("isRecording", this);
   valueTreeState.addParameterListener("recordOnLaunch", this);

@@ -111,7 +111,7 @@ public:
   void setListener() {
     // Need to add in some things to sync instances and shizz
     onClick = [&] {
-      DataStore::getInstance()->setIsRecording(id, !DataStore::getInstance()->getIsRecording(id));
+      DataStore::getInstance()->setAllRecording(id, !DataStore::getInstance()->getIsRecording(id));
     };
   }
 

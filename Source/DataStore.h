@@ -12,6 +12,7 @@ struct Inst {
   bool isRecording       = false;
   bool recordOnLaunch    = false;
   bool recordOnPlay      = false;
+  juce::int64 time       = 0;  // used for filename creation
 
   juce::AudioProcessorValueTreeState& t;
 
@@ -42,6 +43,10 @@ public:
 
   bool getIsRecording(int id) const noexcept;
   void setIsRecording(int id, bool b) noexcept;
+  void setAllRecording(int id, bool b) noexcept;
+
+  juce::int64 getTime(int id) noexcept;
+  void setTime(int id, juce::int64 t) noexcept;
 
   /**
    * Set all of the instance variables to the tree state.

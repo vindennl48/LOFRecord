@@ -157,6 +157,52 @@ void DataStore::setIsRecording(int id, bool b) noexcept {
   }
 }
 
+void DataStore::setAllRecording(int id, bool b) noexcept {
+  juce::String groupName;
+  juce::int64 time = getTime(id);
+
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      groupName = insts.getReference(i).groupName;
+      break;
+    }
+    return; // if we cant find the instance
+  }
+
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).groupName == groupName) {
+      setTime(i, time); // set all time for the group
+      setIsRecording(i, b);
+    }
+  }
+}
+
+juce::int64 DataStore::getTime(int id) noexcept {
+  // return time that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      if (insts.getReference(i).time == 0 ) {
+        return juce::Time::getCurrentTime().toMilliseconds() % 86400000;
+      } else {
+        juce::int64 result = insts.getReference(i).time;
+        insts.getReference(i).time = 0;
+        return result;
+      }
+    }
+  }
+  return 0;
+}
+
+void DataStore::setTime(int id, juce::int64 t) noexcept {
+  // set time that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id && insts.getReference(i).time != t) {
+      insts.getReference(i).time = t;
+      break;
+    }
+  }
+}
+
 void DataStore::saveState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
   t.state.setProperty( "trackName",      getTrackName(id),      nullptr );
   t.state.setProperty( "groupName",      getGroupName(id),      nullptr );

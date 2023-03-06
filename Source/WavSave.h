@@ -1,41 +1,82 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "DataStore.h"
 
 #define NUM_BLOCKS 64
 
 class WavSave : public juce::Thread {
-public:
+  juce::AbstractFifo       fifo;
+  juce::AudioBuffer<float> buffer;
+  juce::String             filePath;
+  int numChannels;
+  int sampleRate;
+  int bitDepth;
+  int bufferSize;
+  int id = 0;
 
-  WavSave(int numChannels)
+public:
+  WavSave(int newID)
     : juce::Thread("WavSave"),
       fifo(512),
-      buffer(numChannels, 512),
-      numChannels(numChannels),
-      sampleRate(0),
+      buffer(2, 512),
+      numChannels(2),
+      sampleRate(48000),
       bitDepth(16),
-      bufferSize(0)
+      bufferSize(512),
+      id(newID)
   {}
 
-  // virtual ~WavSave() noexcept(true) {}
+  juce::String createFilename() {
+    auto ds = DataStore::getInstance();
 
-  void startRecording(const juce::String& filePath, int sampleRate, int bufferSize) {
+    juce::String date      = juce::Time::getCurrentTime().formatted("%y%m%d");
+    juce::int64  time      = ds->getTime(id);
+    juce::String trackName = ds->getTrackName(id);
+    juce::String groupName = ds->getGroupName(id);
+    juce::String directory = ds->getDirectory(id);
+
+    juce::String filename = date + "-" + juce::String(time) + "-" + groupName + "-" + trackName + "-";
+
+    // get the number of files in the directory starting with filename
+    juce::File parent = juce::File(directory);
+    // create filename search string that removes time from the middle
+    juce::String search = date + "-*" + "-" + groupName + "-" + trackName + "-*";
+    // count all files in directory that start with search string
+    juce::Array<juce::File> files = parent.findChildFiles(juce::File::TypesOfFileToFind::findFiles, true, search);
+    // set a variable 'count' to the number of files found
+    int count = files.size();
+
+    // join filename and count with 3 digits and .wav, pad with zeros if needed
+    filename = filename + juce::String(count).paddedLeft('0', 3) + ".wav";
+
+    return filename;
+  }
+
+  void startRecording(int newNumChannels, int newSampleRate, int newBufferSize) {
     // check if thread is running
     if (isThreadRunning()) return;
 
-    this->sampleRate = sampleRate;
-    this->bufferSize = bufferSize;
-    this->filePath = filePath;
+    numChannels = newNumChannels;
+    sampleRate  = newSampleRate;
+    bufferSize  = newBufferSize;
+    filePath    = createFilename();
 
     buffer.setSize(numChannels, bufferSize * NUM_BLOCKS);
-    fifo.reset();
+    buffer.clear();
     fifo.setTotalSize(bufferSize * NUM_BLOCKS);
+    fifo.reset();
     startThread();
   }
+
   void stopRecording() {
     stopThread(1000);
   }
 
+  /**
+   * Make sure to check, ONLY run when thread is running.. we need to set the
+   * buffer up first
+   * */
   void add(juce::AudioBuffer<float>& samples) {
     int start1, size1, start2, size2;
     fifo.prepareToWrite(samples.getNumSamples(), start1, size1, start2, size2);
@@ -52,7 +93,9 @@ public:
     fifo.finishedWrite(size1 + size2);
   }
 
-
+  /**
+   * Actual Thread Function
+   * */
   void run() override {
     juce::WavAudioFormat wavFormat;
     
@@ -96,14 +139,6 @@ private:
       }
     fifo.finishedRead(size1 + size2);
   }
-
-  juce::AbstractFifo       fifo;
-  juce::AudioBuffer<float> buffer;
-  juce::String             filePath;
-  int numChannels;
-  int sampleRate;
-  int bitDepth;
-  int bufferSize;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WavSave)
 };

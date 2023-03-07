@@ -6,18 +6,26 @@
               pluginFormats="buildAU,buildStandalone" defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="XryX0P" name="LOFRecord">
     <GROUP id="{7F4C2784-B828-1BEF-0EEA-91810E11E7C3}" name="Source">
-      <FILE id="GwitsD" name="PluginProcessor_unused.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor_unused.cpp"/>
-      <FILE id="eEGcLa" name="PluginProcessor_getset.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor_getset.cpp"/>
-      <FILE id="q8GBEO" name="PluginProcessor.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor.cpp"/>
       <FILE id="mskri8" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="jYzWrL" name="WavSave.h" compile="0" resource="0" file="Source/WavSave.h"/>
+      <FILE id="q8GBEO" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="GwitsD" name="PluginProcessor_unused.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor_unused.cpp"/>
+      <FILE id="aUo1Fx" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="dKx10f" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
-      <FILE id="aUo1Fx" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="p92oe0" name="DataStore.cpp" compile="1" resource="0" file="Source/DataStore.cpp"/>
+      <FILE id="s67vkR" name="Listeners.h" compile="0" resource="0" file="Source/Listeners.h"/>
+      <FILE id="mPzpBt" name="Listeners.cpp" compile="1" resource="0" file="Source/Listeners.cpp"/>
+      <FILE id="McbqXN" name="NewTable.cpp" compile="1" resource="0" file="Source/NewTable.cpp"/>
+      <FILE id="gR3a9N" name="NewTable.h" compile="0" resource="0" file="Source/NewTable.h"/>
+      <FILE id="R5qVwb" name="DataStore.h" compile="0" resource="0" file="Source/DataStore.h"/>
+      <FILE id="mkXOCp" name="Debug.h" compile="0" resource="0" file="Source/Debug.h"/>
+      <FILE id="PDVSFm" name="Debug.cpp" compile="1" resource="0" file="Source/Debug.cpp"/>
+      <FILE id="zbHsZM" name="CustomComponents.h" compile="0" resource="0"
+            file="Source/CustomComponents.h"/>
+      <FILE id="IAzRd1" name="WavSave.h" compile="0" resource="0" file="Source/WavSave.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

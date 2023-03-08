@@ -45,6 +45,8 @@ public:
   void setIsRecording(int id, bool b) noexcept;
   void setAllRecording(int id, bool b) noexcept;
 
+  juce::AudioProcessorValueTreeState& getTreeState(int id) noexcept;
+
   /**
    * Used to get the id from the instance in the array at a specific position.
    * Need this for the custom table component.

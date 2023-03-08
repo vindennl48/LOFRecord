@@ -2,6 +2,7 @@
 #include "NewTable.h"
 #include "DataStore.h"
 #include "CustomComponents.h"
+#include "TextBox.h"
 #include "Debug.h"
 
 NewTable::NewTable(int newID) : id(newID)
@@ -79,13 +80,15 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
   switch (columnId) {
     case trackColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new TrackNameTextField(rowID, "trackName-" + juce::String(rowID));
+        // return new TrackNameTextField(rowID, "trackName-" + juce::String(rowID));
+        return new TextBox("trackName-" + juce::String(rowID), rowID, "trackName");
       }
       break;
 
     case groupColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new GroupNameTextField(rowID, "groupName-" + juce::String(rowID));
+        // return new GroupNameTextField(rowID, "groupName-" + juce::String(rowID));
+        return new TextBox("trackName2-" + juce::String(rowID), rowID, "trackName");
       }
       break;
 

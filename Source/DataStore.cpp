@@ -187,6 +187,19 @@ void DataStore::setAllRecording(int id, bool b) noexcept {
   }
 }
 
+juce::AudioProcessorValueTreeState& DataStore::getTreeState(int id) noexcept {
+  // return tree state that matches id
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      return insts.getReference(i).t;
+    }
+  }
+  printToConsole(S("####> ERROR> ") + S("DataStore::getTreeState() - id not found: ") + S(id));
+  jassertfalse;
+  // throw std::runtime_error("DataStore::getTreeState() - id not found");
+  // return "####";
+}
+
 int DataStore::getIDFromPos(int pos) const noexcept {
   if (pos < 0 || pos >= insts.size())
     return -1;

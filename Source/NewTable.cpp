@@ -3,6 +3,7 @@
 #include "DataStore.h"
 #include "CustomComponents.h"
 #include "TextBox.h"
+#include "ToggleButton.h"
 #include "Debug.h"
 
 NewTable::NewTable(int newID) : id(newID)
@@ -88,7 +89,7 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
     case groupColumn:
       if (existingComponentToUpdate == nullptr) {
         // return new GroupNameTextField(rowID, "groupName-" + juce::String(rowID));
-        return new TextBox("trackName2-" + juce::String(rowID), rowID, "trackName");
+        return new TextBox("groupName-" + juce::String(rowID), rowID, "groupName");
       }
       break;
 
@@ -100,13 +101,15 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
 
     case recordColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new RecordButton(rowID, "record-" + juce::String(rowID));
+        // return new RecordButton(rowID, "record-" + juce::String(rowID));
+        return new ToggleButton("record-" + juce::String(rowID), rowID, "isRecording");
       }
       break;
 
     case recordOnLaunchColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new RecordOnLaunchButton(rowID, "recordOnLaunch-" + juce::String(rowID));
+        // return new RecordOnLaunchButton(rowID, "recordOnLaunch-" + juce::String(rowID));
+        return new ToggleButton("record2-" + juce::String(rowID), rowID, "isRecording");
       }
       break;
 

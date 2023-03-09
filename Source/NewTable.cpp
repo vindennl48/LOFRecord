@@ -102,14 +102,16 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
     case recordColumn:
       if (existingComponentToUpdate == nullptr) {
         // return new RecordButton(rowID, "record-" + juce::String(rowID));
-        return new ToggleButton("record-" + juce::String(rowID), rowID, "isRecording");
+        return new ToggleButton("RECORDING", "record", "isRecording-" + juce::String(rowID),
+          rowID, "isRecording", juce::Colours::red);
       }
       break;
 
     case recordOnLaunchColumn:
       if (existingComponentToUpdate == nullptr) {
         // return new RecordOnLaunchButton(rowID, "recordOnLaunch-" + juce::String(rowID));
-        return new ToggleButton("record2-" + juce::String(rowID), rowID, "isRecording");
+        return new ToggleButton("ON", "off", "recordOnLaunch-" + juce::String(rowID),
+          rowID, "recordOnLaunch", juce::Colours::green);
       }
       break;
 

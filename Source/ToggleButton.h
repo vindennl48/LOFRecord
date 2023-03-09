@@ -14,22 +14,32 @@ public:
   int id = 0;
   juce::String parameterID = "default";
   juce::ValueTree state;
+  juce::String onText   = "ON";
+  juce::String offText  = "off";
+  juce::Colour onColour = juce::Colours::green;
 
   /**
    * @brief Construct a new Text button object
    * @param newID the id of the plugin instance
    * @param newParameterID the id of the parameter to update
    */
-  ToggleButton(juce::String name, int newID, juce::String newParameterID)
-    : juce::TextButton(name),
+  ToggleButton(
+      juce::String newOnText,
+      juce::String newOffText,
+      juce::String juceName,
+      int          newID,
+      juce::String newParameterID,
+      juce::Colour newOnColour = juce::Colours::green
+  )
+    : juce::TextButton(juceName),
       id(newID),
-      parameterID(newParameterID)
+      parameterID(newParameterID),
+      onText(newOnText),
+      offText(newOffText),
+      onColour(newOnColour)
   {
     // when text button changes
     addListener(this);
-
-    // set text on button
-    setButtonText(name);
 
     // for when value tree state changes
     // Need to keep our 'state' var in scope, once it goes out of scope
@@ -74,13 +84,11 @@ public:
       lf.drawButtonBackground (
         g,
         *this,
-        // findColour (getToggleState() ? buttonOnColourId : buttonColourId),
-        juce::Colours::green,
+        onColour,
         shouldDrawButtonAsHighlighted,
         shouldDrawButtonAsDown
       );
-      lf.drawButtonText (g, *this, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
-      // setButtonText("IS RECORDING");
+      setButtonText(onText);
     } else {
       // printToConsole(S("----> ToggleButton::paintButton getToggleState returned False"));
       lf.drawButtonBackground (
@@ -90,6 +98,7 @@ public:
         shouldDrawButtonAsHighlighted,
         shouldDrawButtonAsDown
       );
+      setButtonText(offText);
     }
     lf.drawButtonText (g, *this, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
   }

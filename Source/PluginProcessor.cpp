@@ -40,7 +40,9 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
   // lets add some defaults
   m_params.state.setProperty("trackName",      "default", nullptr);
   m_params.state.setProperty("groupName",      "default", nullptr);
-  m_params.state.setProperty("directory",      "default", nullptr);
+  m_params.state.setProperty("directory",
+    juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
+    .getFullPathName(), nullptr);
   m_params.state.setProperty("isRecording",    false,     nullptr);
   m_params.state.setProperty("recordOnLaunch", false,     nullptr);
   m_params.state.setProperty("recordOnPlay",   false,     nullptr);
@@ -81,26 +83,27 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-//    if (DS->getIsRecording(id)) {
-//      if (!isRecording) {
-//        wavSave->startRecording(
-//          buffer.getNumChannels(),
-//          getSampleRate(),
-//          buffer.getNumSamples()
-//        );
-//        isRecording = true;
-//      } else {
-//        // recording stuff goes here
-//        wavSave->add(buffer);
-//        // printToConsole(S("----> Recording! id: ") + S(id));
-//      }
-//    } else {
-//      // reset
-//      if (isRecording) {
-//        isRecording = false;
-//        wavSave->stopRecording();
-//      }
-//    }
+    // if (DS->getIsRecording(id)) {
+    if (DS->getBool(id, "isRecording")) {
+      if (!isRecording) {
+        wavSave->startRecording(
+          buffer.getNumChannels(),
+          getSampleRate(),
+          buffer.getNumSamples()
+        );
+        isRecording = true;
+      } else {
+        // recording stuff goes here
+        wavSave->add(buffer);
+        // printToConsole(S("----> Recording! id: ") + S(id));
+      }
+    } else {
+      // reset
+      if (isRecording) {
+        isRecording = false;
+        wavSave->stopRecording();
+      }
+    }
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...

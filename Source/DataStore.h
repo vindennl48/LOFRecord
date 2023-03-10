@@ -41,6 +41,12 @@ public:
   void setBool(int id, juce::String name, bool v) noexcept;
 
   /**
+   * Need a custom function to start recording so we can start all group
+   * recordings at the same time
+   * */
+  void setAllRecord(int id, bool b) noexcept;
+
+  /**
    * Used specifically for custom components to add Listeners to the specific
    * value tree state.
    * */

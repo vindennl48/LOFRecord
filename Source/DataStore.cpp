@@ -59,6 +59,24 @@ void DataStore::setBool(int id, juce::String name, bool v) noexcept {
   getInstByID(id).t.state.setProperty(name, v, nullptr);
 }
 
+void DataStore::setAllRecord(int id, bool b) noexcept {
+  juce::String groupName = getString(id, "groupName");
+  juce::int64 time = getTime(id);
+
+  if (groupName.isEmpty())
+    return; // if we cant find the instance
+
+
+  for (int i = 0; i < insts.size(); ++i) {
+    int thisID = getIDFromPos(i);
+    if (getString(thisID, "groupName") == groupName) {
+      printToConsole("----> HIT HERE!");
+      setTime(thisID, time); // set all time for the group
+      setBool(thisID, "isRecording", b);
+    }
+  }
+}
+
 juce::AudioProcessorValueTreeState& DataStore::getTreeState(int id) noexcept {
   return getInstByID(id).t;
 }

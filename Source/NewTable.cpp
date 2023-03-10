@@ -3,6 +3,7 @@
 #include "DataStore.h"
 #include "TextBox.h"
 #include "ToggleButton.h"
+#include "SetPathButton.h"
 #include "Debug.h"
 
 NewTable::NewTable(int newID) : id(newID)
@@ -70,16 +71,15 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
       }
       break;
 
-    // case directoryColumn:
-    //   if (existingComponentToUpdate == nullptr) {
-    //     return new DirectoryButton(rowID, "directory-" + juce::String(rowID));
-    //   }
-    //   break;
+    case directoryColumn:
+      if (existingComponentToUpdate == nullptr) {
+        return new SetPathButton("directory-" + juce::String(rowID), rowID, "directory");
+      }
+      break;
 
     case recordColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new ToggleButton("RECORDING", "record", "isRecording-" + juce::String(rowID),
-          rowID, "isRecording", juce::Colours::red);
+        return new RecordButton("isRecording-" + juce::String(rowID), rowID, "isRecording");
       }
       break;
 

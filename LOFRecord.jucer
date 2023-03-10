@@ -23,6 +23,8 @@
       <FILE id="R5qVwb" name="DataStore.h" compile="0" resource="0" file="Source/DataStore.h"/>
       <FILE id="mkXOCp" name="Debug.h" compile="0" resource="0" file="Source/Debug.h"/>
       <FILE id="PDVSFm" name="Debug.cpp" compile="1" resource="0" file="Source/Debug.cpp"/>
+      <FILE id="zC1cAN" name="TextBox.h" compile="0" resource="0" file="Source/TextBox.h"/>
+      <FILE id="Fv934x" name="ToggleButton.h" compile="0" resource="0" file="Source/ToggleButton.h"/>
       <FILE id="zbHsZM" name="CustomComponents.h" compile="0" resource="0"
             file="Source/CustomComponents.h"/>
       <FILE id="IAzRd1" name="WavSave.h" compile="0" resource="0" file="Source/WavSave.h"/>

@@ -4,15 +4,8 @@
 #include <JuceHeader.h>
 
 struct Inst {
-  int id = 0;
-
-  juce::String trackName = "default";
-  juce::String groupName = "default";
-  juce::String directory = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName();
-  bool isRecording       = false;
-  bool recordOnLaunch    = false;
-  bool recordOnPlay      = false;
-  juce::int64 time       = 0;  // used for filename creation
+  int         id   = 0;
+  juce::int64 time = 0; // used for filename creation
 
   juce::AudioProcessorValueTreeState& t;
 
@@ -21,30 +14,36 @@ struct Inst {
 
 class DataStore {
 public:
-  // getters and setters
+  /**
+   * Add and remove new plugin instances
+   * */
   int addInst(juce::AudioProcessorValueTreeState& t) noexcept;
   void removeInst(int id) noexcept;
+
+  /**
+   * Get how many instances are in existence.
+   * */
   int size() const noexcept;
 
-  juce::String getTrackName(int id) const noexcept;
-  void setTrackName(int id, const juce::String& name) noexcept;
+  //============================================================================
 
-  juce::String getGroupName(int id) const noexcept;
-  void setGroupName(int id, const juce::String& name) noexcept;
+  /**
+   * Get and set string values in the value tree state.
+   * */
+  juce::String getString(int id, juce::String name) noexcept;
+  void setString(int id, juce::String name, juce::String v,
+    bool useFilter=false) noexcept;
 
-  juce::String getDirectory(int id) const noexcept;
-  void setDirectory(int id, const juce::String& name) noexcept;
+  /**
+   * Get and set bool values in the value tree state.
+   * */
+  bool getBool(int id, juce::String name) noexcept;
+  void setBool(int id, juce::String name, bool v) noexcept;
 
-  bool getRecordOnLaunch(int id) const noexcept;
-  void setRecordOnLaunch(int id, bool b) noexcept;
-
-  bool getRecordOnPlay(int id) const noexcept;
-  void setRecordOnPlay(int id, bool b) noexcept;
-
-  bool getIsRecording(int id) const noexcept;
-  void setIsRecording(int id, bool b) noexcept;
-  void setAllRecording(int id, bool b) noexcept;
-
+  /**
+   * Used specifically for custom components to add Listeners to the specific
+   * value tree state.
+   * */
   juce::AudioProcessorValueTreeState& getTreeState(int id) noexcept;
 
   /**
@@ -53,6 +52,9 @@ public:
    * */
   int getIDFromPos(int pos) const noexcept;
 
+  /**
+   * Used to get the time for the filename creation.
+   * */
   juce::int64 getTime(int id) noexcept;
   void setTime(int id, juce::int64 t) noexcept;
 
@@ -60,8 +62,8 @@ public:
    * Set all of the instance variables to the tree state.
    * Make sure to update this function when adding variables.
    * */
-  void saveState(int id, juce::AudioProcessorValueTreeState& t) noexcept;
-  void loadState(int id, juce::AudioProcessorValueTreeState& t) noexcept;
+  // void saveState(int id, juce::AudioProcessorValueTreeState& t) noexcept;
+  // void loadState(int id, juce::AudioProcessorValueTreeState& t) noexcept;
 
   JUCE_DECLARE_SINGLETON(DataStore, true);
 private:
@@ -70,4 +72,13 @@ private:
   juce::Array<Inst> insts;
 
   DataStore() = default;
+
+  /**
+   * Helper function to get the instance with given id
+   * */
+  Inst& getInstByID(int id) noexcept;
 };
+
+// Nice short-hand for this full monstrosity
+#define DS DataStore::getInstance()
+

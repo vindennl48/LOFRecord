@@ -29,7 +29,7 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
     )
 #endif
 {
-  id = DataStore::getInstance()->addInst(m_params); // MUST BE FIRST
+  id = DS->addInst(m_params); // MUST BE FIRST
 
   m_params.state = juce::ValueTree("MyAudioProcessor");
   // Add the directory valuetree child node to the state tree
@@ -37,13 +37,13 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
   m_params.state.addChild(juce::ValueTree("groupName"), -1, nullptr);
   m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
 
-  listeners = new Listeners(id, m_params);
+  // listeners = new Listeners(id, m_params);
   wavSave   = new WavSave(id);
 }
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
-  delete listeners;
-  DataStore::getInstance()->removeInst(id);
+  // delete listeners;
+  DS->removeInst(id);
 }
 
 // ----------------- mitch stuff -----------------
@@ -56,35 +56,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout LOFRecordAudioProcessor::cre
   layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "recordOnPlay",   1 }, "Start Recording On Play",   false ) );
   return layout;
 }
-
-// void LOFRecordAudioProcessor::startRecording() {
-//   if (isRecording()) return;
-// 
-//   // create filepath
-//   juce::String filename = createFilename();
-//   juce::String filepath =
-//     DataStore::getInstance()->getDirectory(id) + "/" + filename;
-// //  m_recorder.startRecording(filepath);
-// 
-//   isRecording(true);
-// }
-
-// void LOFRecordAudioProcessor::stopRecording() {
-//   if (!isRecording()) return;
-//   if (getSyncWithOtherInstances()) m_isRecordingGlobal = false;
-// 
-// //  m_recorder.stopRecording();
-//   isRecording(false);
-// }
-
-// bool LOFRecordAudioProcessor::isRecording() const {
-//   return DataStore::getInstance()->getIsRecording(id);
-// }
-// 
-// void LOFRecordAudioProcessor::isRecording(bool isRecording) {
-//   DataStore::getInstance()->setIsRecording(id, isRecording);
-// }
-
 
 // PRIVATE
 //==============================================================================
@@ -103,26 +74,26 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    if (DataStore::getInstance()->getIsRecording(id)) {
-      if (!isRecording) {
-        wavSave->startRecording(
-          buffer.getNumChannels(),
-          getSampleRate(),
-          buffer.getNumSamples()
-        );
-        isRecording = true;
-      } else {
-        // recording stuff goes here
-        wavSave->add(buffer);
-        // printToConsole(S("----> Recording! id: ") + S(id));
-      }
-    } else {
-      // reset
-      if (isRecording) {
-        isRecording = false;
-        wavSave->stopRecording();
-      }
-    }
+//    if (DS->getIsRecording(id)) {
+//      if (!isRecording) {
+//        wavSave->startRecording(
+//          buffer.getNumChannels(),
+//          getSampleRate(),
+//          buffer.getNumSamples()
+//        );
+//        isRecording = true;
+//      } else {
+//        // recording stuff goes here
+//        wavSave->add(buffer);
+//        // printToConsole(S("----> Recording! id: ") + S(id));
+//      }
+//    } else {
+//      // reset
+//      if (isRecording) {
+//        isRecording = false;
+//        wavSave->stopRecording();
+//      }
+//    }
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
@@ -142,7 +113,7 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 void LOFRecordAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
   // load singleton state into tree
-  DataStore::getInstance()->saveState(id, m_params);
+  // DS->saveState(id, m_params);
 
   // Write the state of the AudioProcessorValueTreeState to a memory stream
   juce::MemoryOutputStream stream(destData, true);
@@ -156,11 +127,12 @@ void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInB
   auto tree = juce::ValueTree::readFromData(data, size_t(sizeInBytes));
   if (tree.isValid()) {
       m_params.replaceState(tree);
-      DataStore::getInstance()->loadState(id, m_params);
+
+      // DS->loadState(id, m_params);
 
       // if start record is checked, lets start recording
-      if (isFirstLaunch && DataStore::getInstance()->getRecordOnLaunch(id)) {
-        DataStore::getInstance()->setIsRecording(id, true);
+      if (isFirstLaunch && DS->getBool(id, "recordOnLaunch")) {
+        DS->setBool(id, "isRecording", true);
         isFirstLaunch = false;
       }
   }

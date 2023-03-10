@@ -1,6 +1,8 @@
 # LOF Recording Plugin
 
 ## TODO
+- Match background colors of groupText boxes if they are in the same group.
+
 - Really need to add a way we can change the entire group name instead of having
   to do one at a time.  when changing between songs at practice, it would be
   very helpful to only have to do it once.
@@ -26,25 +28,9 @@
 ## Features
 
 ### Definite
-- When we STOP recording, we want some sort of popup window confirming that we
-  want to stop recording.. we do NOT want to accidentally stop recording..
-  - maybe have a setting for this?
-
-- Check to see what happens to the recordings / instances when the audio device
-  is disconnected or changed? ( i know ableton crashes on disconnect, but if i
-  change the inputs/outputs, does it affect anything? )
-
-- Have each instance's data be saved in a static variable or data-store.  Then
-  all instances can access everyone elses data.
   - Want to change the user interface to have the following
     - Have a tab that defaults to the Instances page
-      - Record button at the top for the current instance (and any other instance
-        in the same group)
-      - Big excel table to list all the currenty opened instances, with the
-        following columns:
-        - Track Name, Group Name (song name), Recording, Start on Launch, Start on Playback
-        - Always show the current instance at the top of the list
-      - Need to figure out how to do vertical scroll bars
+      - big list of all plugin instances open
     - Have a Tab that lets us go to the recorded page
       - Need some sort of refresh button or way to refresh this view
       - Lists out all of the recordings by group in chronological order. (ie.

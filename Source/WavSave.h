@@ -29,13 +29,11 @@ public:
   {}
 
   juce::String createFilename() {
-    auto ds = DataStore::getInstance();
-
     juce::String date      = juce::Time::getCurrentTime().formatted("%y%m%d");
-    juce::int64  time      = ds->getTime(id);
-    juce::String trackName = ds->getTrackName(id);
-    juce::String groupName = ds->getGroupName(id);
-    juce::String directory = ds->getDirectory(id);
+    juce::int64  time      = DS->getTime(id);
+    juce::String trackName = DS->getString(id, "trackName");
+    juce::String groupName = DS->getString(id, "groupName");
+    juce::String directory = DS->getString(id, "directory");
 
     juce::String filename = date + "-" + juce::String(time) + "-" + groupName + "-" + trackName + "-";
 
@@ -62,7 +60,7 @@ public:
     sampleRate  = newSampleRate;
     bufferSize  = newBufferSize;
 
-    juce::String parent   = DataStore::getInstance()->getDirectory(id);
+    juce::String parent   = DS->getString(id, "directory");
     juce::String filename = createFilename();
 
     filepath = parent + "/" + filename;

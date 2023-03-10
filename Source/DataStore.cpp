@@ -30,220 +30,93 @@ int DataStore::size() const noexcept {
   return insts.size();
 }
 
-juce::String DataStore::getTrackName(int id) const noexcept {
-  // return track name that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      return insts.getReference(i).trackName;
-    }
-  }
-  printToConsole(S("####> ERROR> ") + S("DataStore::getTrackName() - id not found: ") + S(id));
-  jassertfalse;
-  // throw std::runtime_error("DataStore::getTrackName() - id not found");
-  // return "####";
+//==============================================================================
+
+juce::String DataStore::getString(int id, juce::String name) noexcept {
+  return getInstByID(id).t.state.getProperty(name).toString();
 }
 
-void DataStore::setTrackName(int id, const juce::String& name) noexcept {
-  // showMessageBox("Setting Track id: " + juce::String(id) + " and name: " + name);
-  // set track name that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      insts.getReference(i).trackName =
-        name.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
-      break;
-    }
+void DataStore::setString(
+  int          id,
+  juce::String name,
+  juce::String v,
+  bool         useFilter
+) noexcept
+{
+  if (useFilter) {
+    v = v.toLowerCase().replaceCharacters(
+      " !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________"
+    );
   }
+  getInstByID(id).t.state.setProperty(name, v, nullptr);
 }
 
-juce::String DataStore::getGroupName(int id) const noexcept {
-  // return group name that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      return insts.getReference(i).groupName;
-    }
-  }
-  printToConsole(S("####> ERROR> ") + S("DataStore::getGroupName() - id not found: ") + S(id));
-  jassertfalse;
-  // throw std::runtime_error("DataStore::getGroupName() - id not found");
-  // return "####";
+bool DataStore::getBool(int id, juce::String name) noexcept {
+  return getInstByID(id).t.state.getProperty(name);
 }
 
-void DataStore::setGroupName(int id, const juce::String& name) noexcept {
-  // set group name that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      insts.getReference(i).groupName =
-        name.toLowerCase().replaceCharacters(" !@#$%^&*(){}[]|\\:;\"'<>,.?/~`", "_____________________________");
-      break;
-    }
-  }
-}
-
-juce::String DataStore::getDirectory(int id) const noexcept {
-  // return directory that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      return insts.getReference(i).directory;
-    }
-  }
-  printToConsole(S("####> ERROR> ") + S("DataStore::getDirectory() - id not found: ") + S(id));
-  jassertfalse;
-  // throw std::runtime_error("DataStore::getDirectory() - id not found");
-  // return "####";
-}
-
-void DataStore::setDirectory(int id, const juce::String& name) noexcept {
-  // set directory that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      insts.getReference(i).directory = name;
-      break;
-    }
-  }
-}
-
-bool DataStore::getRecordOnLaunch(int id) const noexcept {
-  // return recordOnLaunch that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      return insts.getReference(i).recordOnLaunch;
-    }
-  }
-  return false;
-}
-
-void DataStore::setRecordOnLaunch(int id, bool b) noexcept {
-  // set recordOnLaunch that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id && insts.getReference(i).recordOnLaunch != b) {
-      insts.getReference(i).recordOnLaunch = b;
-      insts.getReference(i).t.getParameter("recordOnLaunch")->setValueNotifyingHost(b);
-      break;
-    }
-  }
-}
-
-bool DataStore::getRecordOnPlay(int id) const noexcept {
-  // return recordOnPlay that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      return insts.getReference(i).recordOnPlay;
-    }
-  }
-  return false;
-}
-
-void DataStore::setRecordOnPlay(int id, bool b) noexcept {
-  // set recordOnPlay that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id && insts.getReference(i).recordOnPlay != b) {
-      insts.getReference(i).recordOnPlay = b;
-      insts.getReference(i).t.getParameter("recordOnPlay")->setValueNotifyingHost(b);
-      break;
-    }
-  }
-}
-
-bool DataStore::getIsRecording(int id) const noexcept {
-  // return isRecording that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      return insts.getReference(i).isRecording;
-    }
-  }
-  return false;
-}
-
-void DataStore::setIsRecording(int id, bool b) noexcept {
-  // set isRecording that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id && insts.getReference(i).isRecording != b) {
-      insts.getReference(i).isRecording = b;
-      insts.getReference(i).t.getParameter("isRecording")->setValueNotifyingHost(b);
-      break;
-    }
-  }
-}
-
-void DataStore::setAllRecording(int id, bool b) noexcept {
-  juce::String groupName;
-  juce::int64 time = getTime(id);
-
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      groupName = insts.getReference(i).groupName;
-      break;
-    }
-  }
-
-  if (groupName.isEmpty())
-    return; // if we cant find the instance
-
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).groupName == groupName) {
-      setTime(i, time); // set all time for the group
-      setIsRecording(i, b);
-    }
-  }
+void DataStore::setBool(int id, juce::String name, bool v) noexcept {
+  getInstByID(id).t.state.setProperty(name, v, nullptr);
 }
 
 juce::AudioProcessorValueTreeState& DataStore::getTreeState(int id) noexcept {
-  // return tree state that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      return insts.getReference(i).t;
-    }
-  }
-  printToConsole(S("####> ERROR> ") + S("DataStore::getTreeState() - id not found: ") + S(id));
-  jassertfalse;
-  // throw std::runtime_error("DataStore::getTreeState() - id not found");
-  // return "####";
+  return getInstByID(id).t;
 }
 
 int DataStore::getIDFromPos(int pos) const noexcept {
-  if (pos < 0 || pos >= insts.size())
+  if (pos < 0 || pos >= insts.size()) {
+    printToConsole(S("----> DataStore::getIDFromPos: invalid pos: ") + S(pos));
     return -1;
+  }
   return insts.getReference(pos).id;
 }
 
 juce::int64 DataStore::getTime(int id) noexcept {
-  // return time that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      if (insts.getReference(i).time == 0 ) {
-        return juce::Time::getCurrentTime().toMilliseconds() % 86400000;
-      } else {
-        juce::int64 result = insts.getReference(i).time;
-        insts.getReference(i).time = 0;
-        return result;
-      }
-    }
+  auto& i = getInstByID(id);
+
+  if (i.time == 0) {
+    return juce::Time::getCurrentTime().toMilliseconds() % 86400000;
+  } else {
+    auto time = i.time;
+    i.time = 0;
+    return time;
   }
+
   return 0;
 }
 
 void DataStore::setTime(int id, juce::int64 t) noexcept {
   // set time that matches id
   for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id && insts.getReference(i).time != t) {
+    if (insts.getReference(i).id == id) {
       insts.getReference(i).time = t;
       break;
     }
   }
 }
 
-void DataStore::saveState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
-  t.state.setProperty( "trackName",      getTrackName(id),      nullptr );
-  t.state.setProperty( "groupName",      getGroupName(id),      nullptr );
-  t.state.setProperty( "directory",      getDirectory(id),      nullptr );
-  t.state.setProperty( "recordOnLaunch", getRecordOnLaunch(id), nullptr );
-  t.state.setProperty( "recordOnPlay",   getRecordOnPlay(id),   nullptr );
-}
+// void DataStore::saveState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
+//   t.state.setProperty( "trackName",      getTrackName(id),      nullptr );
+//   t.state.setProperty( "groupName",      getGroupName(id),      nullptr );
+//   t.state.setProperty( "directory",      getDirectory(id),      nullptr );
+//   t.state.setProperty( "recordOnLaunch", getRecordOnLaunch(id), nullptr );
+//   t.state.setProperty( "recordOnPlay",   getRecordOnPlay(id),   nullptr );
+// }
+// 
+// void DataStore::loadState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
+//   setTrackName(      id, t.state.getProperty("trackName").toString() );
+//   setGroupName(      id, t.state.getProperty("groupName").toString() );
+//   setDirectory(      id, t.state.getProperty("directory").toString() );
+//   setRecordOnLaunch( id, t.state.getProperty("recordOnLaunch")       );
+//   setRecordOnPlay(   id, t.state.getProperty("recordOnPlay")         );
+// }
 
-void DataStore::loadState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
-  setTrackName(      id, t.state.getProperty("trackName").toString() );
-  setGroupName(      id, t.state.getProperty("groupName").toString() );
-  setDirectory(      id, t.state.getProperty("directory").toString() );
-  setRecordOnLaunch( id, t.state.getProperty("recordOnLaunch")       );
-  setRecordOnPlay(   id, t.state.getProperty("recordOnPlay")         );
+Inst& DataStore::getInstByID(int id) noexcept {
+  for (int i = 0; i < insts.size(); ++i) {
+    if (insts.getReference(i).id == id) {
+      return insts.getReference(i);
+    }
+  }
+  printToConsole(S("####> ERROR> ") + S("DataStore::getInst() - id not found: ") + S(id));
+  jassertfalse;
 }

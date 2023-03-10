@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "Listeners.h"
+// #include "Listeners.h"
 #include "WavSave.h"
 
 //==============================================================================
@@ -22,7 +22,7 @@ class LOFRecordAudioProcessor  : public juce::AudioProcessor
 public:
     int id = 0;                                  // instance ID
     juce::AudioProcessorValueTreeState m_params; // save settings
-    Listeners* listeners;                        // link GUI with settings
+    // Listeners* listeners;                        // link GUI with settings
     WavSave* wavSave;                            // save wav file
     bool isRecording = false;                    // less overhead to use this
 

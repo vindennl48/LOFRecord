@@ -12,16 +12,20 @@ class ToggleButton
 {
 public:
   int id = 0;
-  juce::String parameterID = "default";
   juce::ValueTree state;
-  juce::String onText   = "ON";
-  juce::String offText  = "off";
-  juce::Colour onColour = juce::Colours::green;
+  juce::String    parameterID = "default";
+  juce::String    onText      = "ON";
+  juce::String    offText     = "off";
+  juce::Colour    onColour    = juce::Colours::green;
 
   /**
    * @brief Construct a new Text button object
+   * @param newOnText the text to display when the button is on
+   * @param newOffText the text to display when the button is off
+   * @param juceName the name of the button
    * @param newID the id of the plugin instance
    * @param newParameterID the id of the parameter to update
+   * @param newOnColour the colour to display when the button is on
    */
   ToggleButton(
       juce::String newOnText,
@@ -44,22 +48,16 @@ public:
     // for when value tree state changes
     // Need to keep our 'state' var in scope, once it goes out of scope
     // the listener will be destroyed
-    state = DataStore::getInstance()->getTreeState(id).state;
+    state = DS->getTreeState(id).state;
     state.addListener(this);
 
     // set initial value
-    setToggleState(
-      DataStore::getInstance()->getTreeState(id)
-        .state.getProperty(parameterID),
-      juce::dontSendNotification
-    );
+    setToggleState(DS->getBool(id, parameterID), juce::dontSendNotification);
   }
 
   // when text button changes, update the value tree state
   void buttonClicked (Button* b) override {
-    // printToConsole(S("----> ToggleButton::buttonClicked"));
-    DataStore::getInstance()->getTreeState(id)
-      .state.setProperty(parameterID, !b->getToggleState(), nullptr);
+    DS->setBool(id, parameterID, !b->getToggleState());
   }
 
   // when value tree state changes, update the text button
@@ -68,7 +66,6 @@ public:
     const juce::Identifier& property
   ) override {
     if (property.toString() == parameterID) {
-      // printToConsole(S("----> ToggleButton::valueTreePropertyChanged"));
       setToggleState(
         treeWhosePropertyHasChanged.getProperty(property),
         juce::dontSendNotification
@@ -84,7 +81,7 @@ public:
       lf.drawButtonBackground (
         g,
         *this,
-        onColour,
+        onColour, // from constructor
         shouldDrawButtonAsHighlighted,
         shouldDrawButtonAsDown
       );

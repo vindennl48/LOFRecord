@@ -1,7 +1,6 @@
 
 #include "NewTable.h"
 #include "DataStore.h"
-#include "CustomComponents.h"
 #include "TextBox.h"
 #include "ToggleButton.h"
 #include "Debug.h"
@@ -31,11 +30,11 @@ void NewTable::resized() {
 }
 
 int NewTable::getNumRows() {
-  return DataStore::getInstance()->size();
+  return DS->size();
 }
 
 void NewTable::paintRowBackground(juce::Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) {
-  if (id == DataStore::getInstance()->getIDFromPos(rowNumber)) {
+  if (id == DS->getIDFromPos(rowNumber)) {
     g.fillAll(juce::Colours::lightblue);
   }
 }
@@ -46,62 +45,39 @@ void NewTable::paintCell(juce::Graphics& g, int rowNumber, int columnId, int wid
 
   switch (columnId) {
     case currentColumn:
-      if (id == DataStore::getInstance()->getIDFromPos(rowNumber)) {
+      if (id == DS->getIDFromPos(rowNumber)) {
         g.drawText(">>", 0, 0, width, height, juce::Justification::centred, true);
       }
       break;
   };
-
-  // auto track = DataStore::getInstance()->getTrack(rowNumber);
-  // switch (columnId) {
-    // case trackColumn:
-      // g.drawText(track->getName(), 2, 0, width - 4, height, Justification::centredLeft, true);
-      // break;
-    // case groupColumn:
-      // g.drawText(track->getGroup(), 2, 0, width - 4, height, Justification::centredLeft, true);
-      // break;
-    // case directoryColumn:
-      // g.drawText(track->getDirectory(), 2, 0, width - 4, height, Justification::centredLeft, true);
-      // break;
-    // case recordOnLaunchColumn:
-      // g.drawText(track->getRecordOnLaunch() ? "Yes" : "No", 2, 0, width - 4, height, Justification::centredLeft, true);
-      // break;
-    // case recordOnPlayColumn:
-      // g.drawText(track->getRecordOnPlay() ? "Yes" : "No", 2, 0, width - 4, height, Justification::centredLeft, true);
-      // break;
-  // }
 }
 
 juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected, juce::Component* existingComponentToUpdate) {
-  // printToConsole(S("----> ") + S("rowNumber: ") + S(rowNumber) + S(", DS Size: ") + S(DataStore::getInstance()->size()));
-  if (rowNumber >= DataStore::getInstance()->size()) return nullptr;
-  int rowID = DataStore::getInstance()->getIDFromPos(rowNumber);
+  if (rowNumber >= DS->size()) return nullptr;
+  int rowID = DS->getIDFromPos(rowNumber);
   if (rowID == -1) return nullptr;
 
   switch (columnId) {
     case trackColumn:
       if (existingComponentToUpdate == nullptr) {
-        // return new TrackNameTextField(rowID, "trackName-" + juce::String(rowID));
-        return new TextBox("trackName-" + juce::String(rowID), rowID, "trackName");
+        return new TextBox("trackName-" + juce::String(rowID), rowID, "trackName", true);
       }
       break;
 
     case groupColumn:
       if (existingComponentToUpdate == nullptr) {
-        // return new GroupNameTextField(rowID, "groupName-" + juce::String(rowID));
-        return new TextBox("groupName-" + juce::String(rowID), rowID, "groupName");
+        return new TextBox("groupName-" + juce::String(rowID), rowID, "groupName", true);
       }
       break;
 
-    case directoryColumn:
-      if (existingComponentToUpdate == nullptr) {
-        return new DirectoryButton(rowID, "directory-" + juce::String(rowID));
-      }
-      break;
+    // case directoryColumn:
+    //   if (existingComponentToUpdate == nullptr) {
+    //     return new DirectoryButton(rowID, "directory-" + juce::String(rowID));
+    //   }
+    //   break;
 
     case recordColumn:
       if (existingComponentToUpdate == nullptr) {
-        // return new RecordButton(rowID, "record-" + juce::String(rowID));
         return new ToggleButton("RECORDING", "record", "isRecording-" + juce::String(rowID),
           rowID, "isRecording", juce::Colours::red);
       }
@@ -109,7 +85,6 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
 
     case recordOnLaunchColumn:
       if (existingComponentToUpdate == nullptr) {
-        // return new RecordOnLaunchButton(rowID, "recordOnLaunch-" + juce::String(rowID));
         return new ToggleButton("ON", "off", "recordOnLaunch-" + juce::String(rowID),
           rowID, "recordOnLaunch", juce::Colours::green);
       }

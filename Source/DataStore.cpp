@@ -95,22 +95,6 @@ void DataStore::setTime(int id, juce::int64 t) noexcept {
   }
 }
 
-// void DataStore::saveState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
-//   t.state.setProperty( "trackName",      getTrackName(id),      nullptr );
-//   t.state.setProperty( "groupName",      getGroupName(id),      nullptr );
-//   t.state.setProperty( "directory",      getDirectory(id),      nullptr );
-//   t.state.setProperty( "recordOnLaunch", getRecordOnLaunch(id), nullptr );
-//   t.state.setProperty( "recordOnPlay",   getRecordOnPlay(id),   nullptr );
-// }
-// 
-// void DataStore::loadState(int id, juce::AudioProcessorValueTreeState& t) noexcept {
-//   setTrackName(      id, t.state.getProperty("trackName").toString() );
-//   setGroupName(      id, t.state.getProperty("groupName").toString() );
-//   setDirectory(      id, t.state.getProperty("directory").toString() );
-//   setRecordOnLaunch( id, t.state.getProperty("recordOnLaunch")       );
-//   setRecordOnPlay(   id, t.state.getProperty("recordOnPlay")         );
-// }
-
 Inst& DataStore::getInstByID(int id) noexcept {
   for (int i = 0; i < insts.size(); ++i) {
     if (insts.getReference(i).id == id) {

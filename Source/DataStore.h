@@ -58,13 +58,6 @@ public:
   juce::int64 getTime(int id) noexcept;
   void setTime(int id, juce::int64 t) noexcept;
 
-  /**
-   * Set all of the instance variables to the tree state.
-   * Make sure to update this function when adding variables.
-   * */
-  // void saveState(int id, juce::AudioProcessorValueTreeState& t) noexcept;
-  // void loadState(int id, juce::AudioProcessorValueTreeState& t) noexcept;
-
   JUCE_DECLARE_SINGLETON(DataStore, true);
 private:
   // data members

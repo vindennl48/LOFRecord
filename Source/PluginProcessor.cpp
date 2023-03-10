@@ -37,8 +37,15 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
   m_params.state.addChild(juce::ValueTree("groupName"), -1, nullptr);
   m_params.state.addChild(juce::ValueTree("directory"), -1, nullptr);
 
-  // listeners = new Listeners(id, m_params);
-  wavSave   = new WavSave(id);
+  // lets add some defaults
+  m_params.state.setProperty("trackName",      "default", nullptr);
+  m_params.state.setProperty("groupName",      "default", nullptr);
+  m_params.state.setProperty("directory",      "default", nullptr);
+  m_params.state.setProperty("isRecording",    false,     nullptr);
+  m_params.state.setProperty("recordOnLaunch", false,     nullptr);
+  m_params.state.setProperty("recordOnPlay",   false,     nullptr);
+
+  wavSave = new WavSave(id);
 }
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
@@ -112,9 +119,6 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 // Save the state of the plugin
 void LOFRecordAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-  // load singleton state into tree
-  // DS->saveState(id, m_params);
-
   // Write the state of the AudioProcessorValueTreeState to a memory stream
   juce::MemoryOutputStream stream(destData, true);
   m_params.state.writeToStream(stream);
@@ -127,8 +131,6 @@ void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInB
   auto tree = juce::ValueTree::readFromData(data, size_t(sizeInBytes));
   if (tree.isValid()) {
       m_params.replaceState(tree);
-
-      // DS->loadState(id, m_params);
 
       // if start record is checked, lets start recording
       if (isFirstLaunch && DS->getBool(id, "recordOnLaunch")) {

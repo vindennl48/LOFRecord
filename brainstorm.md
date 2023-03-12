@@ -1,7 +1,7 @@
 # LOF Recording Plugin
 
 ## TODO
-- Match background colors of groupText boxes if they are in the same group.
+- when creating a new instance, make sure that the track name is unique
 
 - Really need to add a way we can change the entire group name instead of having
   to do one at a time.  when changing between songs at practice, it would be
@@ -13,17 +13,10 @@
 - Would be nice to be able to re-arrange the order of the instances.
   - Could probably do this by moving them around inside the insts array.
 
-- Update the plugin screen without having to mouse over objects.  The Paint
-  function is just not cutting it, need something faster.
-
 - Disable all text input and button presses while recording (not that it should
   really screw with anything but it should be there)
   - probably want to wait till we fix the plugin updating first since nothing
     will auto-disable until the mouse interacts with it.
-
-- Fix issue with Record on Launch, it is not updating the dropdown in Ableton's
-  config section.  It does for everything else though
-  - Might have issues with this till we link everything with the valuetree
 
 ## Features
 

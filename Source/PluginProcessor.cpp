@@ -52,6 +52,7 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
 }
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
+  wavSave->stopRecording();
   delete listeners;
   DS->removeInst(id);
 }
@@ -138,7 +139,7 @@ void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInB
 
       // if start record is checked, lets start recording
       if (isFirstLaunch && DS->getBool(id, "recordOnLaunch")) {
-        DS->isRecording(id, true);
+        DS->setAllRecord(id, true);
         isFirstLaunch = false;
       }
   }

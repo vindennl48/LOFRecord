@@ -60,6 +60,8 @@ void DataStore::setBool(int id, juce::String name, bool v, bool sendAlert) noexc
 }
 
 void DataStore::setAllRecord(int id, bool b) noexcept {
+  if (isRecording(id) == b) return;
+
   juce::String groupName = getString(id, "groupName");
   juce::int64  time      = getTime(id);
 
@@ -113,13 +115,7 @@ juce::int64 DataStore::getTime(int id) noexcept {
 }
 
 void DataStore::setTime(int id, juce::int64 t) noexcept {
-  // set time that matches id
-  for (int i = 0; i < insts.size(); ++i) {
-    if (insts.getReference(i).id == id) {
-      insts.getReference(i).time = t;
-      break;
-    }
-  }
+  getInstByID(id).time = t;
 }
 
 Inst& DataStore::getInstByID(int id) noexcept {

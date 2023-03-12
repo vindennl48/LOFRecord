@@ -79,7 +79,7 @@ juce::Component* NewTable::refreshComponentForCell(int rowNumber, int columnId, 
 
     case recordColumn:
       if (existingComponentToUpdate == nullptr) {
-        return new RecordButton("isRecording-" + juce::String(rowID), rowID, "isRecording");
+        return new RecordButton("recordReady-" + juce::String(rowID), rowID, "recordReady");
       }
       break;
 

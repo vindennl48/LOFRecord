@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-// #include "Listeners.h"
+#include "Listeners.h"
 #include "WavSave.h"
 
 //==============================================================================
@@ -22,7 +22,7 @@ class LOFRecordAudioProcessor  : public juce::AudioProcessor
 public:
     int id = 0;                                  // instance ID
     juce::AudioProcessorValueTreeState m_params; // save settings
-    // Listeners* listeners;                        // link GUI with settings
+    Listeners* listeners;                        // link GUI with settings
     WavSave* wavSave;                            // save wav file
     bool isRecording = false;                    // less overhead to use this
 
@@ -30,13 +30,6 @@ public:
     ~LOFRecordAudioProcessor() override;
 
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
-    // void startRecording();
-    // void stopRecording();
-    // bool isRecording() const;
-    // void isRecording(bool isRecording);
-
-    // // should be used with front-end record button
-    // void Record(bool shouldRecord);
 
 private:
     bool isFirstLaunch = true;  // only true on first launch
@@ -44,8 +37,6 @@ private:
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
-
-    // juce::String createFilename();
 
 // UNUSED
 //==============================================================================

@@ -57,7 +57,7 @@ public:
 
   // when text button changes, update the value tree state
   void buttonClicked (Button* b) override {
-    DS->setBool(id, parameterID, !b->getToggleState());
+    DS->setBool(id, parameterID, !b->getToggleState(), true);
   }
 
   // when value tree state changes, update the text button
@@ -67,7 +67,7 @@ public:
   ) override {
     if (property.toString() == parameterID) {
       setToggleState(
-        treeWhosePropertyHasChanged.getProperty(property),
+        (bool)treeWhosePropertyHasChanged.getProperty(property),
         juce::dontSendNotification
       );
     }
@@ -77,7 +77,6 @@ public:
     auto& lf = getLookAndFeel();
 
     if (getToggleState()) {
-      // printToConsole(S("----> ToggleButton::paintButton getToggleState returned True"));
       lf.drawButtonBackground (
         g,
         *this,
@@ -87,7 +86,6 @@ public:
       );
       setButtonText(onText);
     } else {
-      // printToConsole(S("----> ToggleButton::paintButton getToggleState returned False"));
       lf.drawButtonBackground (
         g,
         *this,
@@ -100,29 +98,6 @@ public:
     lf.drawButtonText (g, *this, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
   }
 };
-
-
-// class RecordButton
-//   : public ToggleButton
-// {
-// public:
-// 
-//   RecordButton(
-//       juce::String juceName,
-//       int          newID,
-//       juce::String newParameterID
-//   )
-//     : ToggleButton("RECORDING", "record", juceName, newID, newParameterID, juce::Colours::red)
-//   {
-//     addListener(this);
-//   }
-// 
-//   // when text button changes, update the value tree state
-//   void buttonClicked (Button* b) override {
-//     DS->setAllRecord(id, !b->getToggleState());
-//   }
-// };
-
 
 class RecordButton
   : public juce::TextButton,
@@ -170,7 +145,6 @@ public:
 
   // when text button changes, update the value tree state
   void buttonClicked (Button* b) override {
-    printToConsole(S("----> RecordButton::buttonClicked"));
     DS->setAllRecord(id, !b->getToggleState());
     // DS->setBool(id, parameterID, !b->getToggleState());
   }
@@ -182,7 +156,7 @@ public:
   ) override {
     if (property.toString() == parameterID) {
       setToggleState(
-        treeWhosePropertyHasChanged.getProperty(property),
+        (bool)treeWhosePropertyHasChanged.getProperty(property),
         juce::dontSendNotification
       );
     }
@@ -192,7 +166,6 @@ public:
     auto& lf = getLookAndFeel();
 
     if (getToggleState()) {
-      // printToConsole(S("----> ToggleButton::paintButton getToggleState returned True"));
       lf.drawButtonBackground (
         g,
         *this,
@@ -202,7 +175,6 @@ public:
       );
       setButtonText(onText);
     } else {
-      // printToConsole(S("----> ToggleButton::paintButton getToggleState returned False"));
       lf.drawButtonBackground (
         g,
         *this,

@@ -43,15 +43,16 @@ LOFRecordAudioProcessor::LOFRecordAudioProcessor()
   m_params.state.setProperty("directory",
     juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
     .getFullPathName(), nullptr);
-  m_params.state.setProperty("isRecording",    false,     nullptr);
-  m_params.state.setProperty("recordOnLaunch", false,     nullptr);
-  m_params.state.setProperty("recordOnPlay",   false,     nullptr);
+  m_params.state.setProperty("recordReady",    false,    nullptr);
+  m_params.state.setProperty("recordOnLaunch", false,    nullptr);
+  m_params.state.setProperty("recordOnPlay",   false,    nullptr);
 
   wavSave = new WavSave(id);
+  listeners = new Listeners(id, m_params);
 }
 
 LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
-  // delete listeners;
+  delete listeners;
   DS->removeInst(id);
 }
 
@@ -60,9 +61,9 @@ LOFRecordAudioProcessor::~LOFRecordAudioProcessor() {
 juce::AudioProcessorValueTreeState::ParameterLayout LOFRecordAudioProcessor::createParameterLayout()
 {
   juce::AudioProcessorValueTreeState::ParameterLayout layout;
-  layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "isRecording",    1 }, "Record",                    false ) );
-  layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "recordOnLaunch", 1 }, "Start Recording On Launch", false ) );
-  layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "recordOnPlay",   1 }, "Start Recording On Play",   false ) );
+  layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "recordReady",    1 }, "Record",                    false ) );
+  layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "recordOnLaunch", 2 }, "Start Recording On Launch", false ) );
+  layout.add( std::make_unique<juce::AudioParameterBool>( juce::ParameterID { "recordOnPlay",   3 }, "Start Recording On Play",   false ) );
   return layout;
 }
 
@@ -84,7 +85,7 @@ void LOFRecordAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         buffer.clear (i, 0, buffer.getNumSamples());
 
     // if (DS->getIsRecording(id)) {
-    if (DS->getBool(id, "isRecording")) {
+    if (DS->isRecording(id)) {
       if (!isRecording) {
         wavSave->startRecording(
           buffer.getNumChannels(),
@@ -137,7 +138,7 @@ void LOFRecordAudioProcessor::setStateInformation (const void* data, int sizeInB
 
       // if start record is checked, lets start recording
       if (isFirstLaunch && DS->getBool(id, "recordOnLaunch")) {
-        DS->setBool(id, "isRecording", true);
+        DS->isRecording(id, true);
         isFirstLaunch = false;
       }
   }

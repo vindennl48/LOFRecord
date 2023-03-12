@@ -4,8 +4,9 @@
 #include <JuceHeader.h>
 
 struct Inst {
-  int         id   = 0;
-  juce::int64 time = 0; // used for filename creation
+  int         id          = 0;
+  juce::int64 time        = 0; // used for filename creation
+  bool        isRecording = false;
 
   juce::AudioProcessorValueTreeState& t;
 
@@ -38,13 +39,15 @@ public:
    * Get and set bool values in the value tree state.
    * */
   bool getBool(int id, juce::String name) noexcept;
-  void setBool(int id, juce::String name, bool v) noexcept;
+  void setBool(int id, juce::String name, bool v, bool sendAlert=false) noexcept;
 
   /**
    * Need a custom function to start recording so we can start all group
-   * recordings at the same time
+   * recordings at the same time.
    * */
   void setAllRecord(int id, bool b) noexcept;
+  void isRecording(int id, bool b) noexcept;
+  bool isRecording(int id) noexcept;
 
   /**
    * Used specifically for custom components to add Listeners to the specific
